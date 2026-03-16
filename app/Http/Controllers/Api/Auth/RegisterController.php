@@ -31,7 +31,6 @@ class RegisterController extends Controller
             'name' => 'required|string|max:100',
             'email' => 'required|string|email|max:150',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|in:2,3,4,5',
         ]);
 
         if ($validator->fails()) {
@@ -99,7 +98,7 @@ class RegisterController extends Controller
             ]);
 
             DB::table('model_has_roles')->insert([
-                'role_id' => $request->role,
+                'role_id' => 3,
                 'model_type' => User::class,
                 'model_id' => $user->id,
             ]);

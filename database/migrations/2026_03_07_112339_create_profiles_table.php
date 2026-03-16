@@ -32,6 +32,8 @@ return new class extends Migration
             $table->timestamp('last_active_at')->nullable();
             $table->boolean('is_online')->default(false);
 
+            $table->boolean('is_agreed')->default(false);
+
             $table->timestamps();
         });
     }
