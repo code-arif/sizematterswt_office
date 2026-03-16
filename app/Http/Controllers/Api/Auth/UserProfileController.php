@@ -70,9 +70,6 @@ class UserProfileController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'name' => 'nullable|string|max:100',
-                'biography' => 'nullable|string|max:2500',
-                'tagline'  => 'nullable|string|max:255',
-                'address'  => 'nullable|string|max:255',
                 'phone' => [
                     'nullable',
                     'string',
