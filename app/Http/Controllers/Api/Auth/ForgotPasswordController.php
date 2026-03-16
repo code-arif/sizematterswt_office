@@ -169,4 +169,75 @@ class ForgotPasswordController extends Controller
             return $this->error('Password reset failed', null, 500);
         }
     }
+
+    /**
+     * Resend password reset OTP
+     */
+    public function resendOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        try {
+
+            $user = User::where('email', $request->email)->first();
+
+            $existingOtp = UserSecurityToken::where('user_id', $user->id)
+                ->where('type', 'password_reset')
+                ->whereNull('used_at')
+                ->where('expires_at', '>', now())
+                ->latest()
+                ->first();
+
+            if (!$existingOtp) {
+                return $this->error('No active OTP found. Please request a new OTP.', null, 404);
+            }
+
+            $resendAvailableAt = $existingOtp->created_at->addSeconds(150);
+
+            if (now()->lessThan($resendAvailableAt)) {
+
+                $remainingSeconds = (int) now()->diffInSeconds($resendAvailableAt);
+
+                return $this->error(
+                    "Please wait {$remainingSeconds} seconds before requesting a new OTP.",
+                    null,
+                    429
+                );
+            }
+
+            // Invalidate old OTP
+            $existingOtp->update([
+                'used_at' => now(),
+            ]);
+
+            $otp = rand(1000, 9999);
+
+            UserSecurityToken::create([
+                'user_id'    => $user->id,
+                'identifier' => $user->email,
+                'token_hash' => Hash::make($otp),
+                'type'       => 'password_reset',
+                'expires_at' => now()->addMinutes(60),
+            ]);
+
+            // Mail::to($user->email)
+            //     ->queue(new OtpMail($otp, $user, 'Reset Your Password - SecAAX'));
+
+            return $this->success(
+                'OTP resent successfully.',
+                [
+                    'otp' => $otp,
+                    'email' => $user->email,
+                    'expires_at' => now()->addMinutes(60)->format('Y-m-d H:i:s')
+                ]
+            );
+        } catch (Exception $e) {
+
+            Log::error('Resend OTP failed: ' . $e->getMessage());
+
+            return $this->error('Failed to resend OTP', null, 500);
+        }
+    }
 }

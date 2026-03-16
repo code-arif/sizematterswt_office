@@ -41,6 +41,7 @@ Route::group(['prefix' => 'v1'], function ($router) {
 
         //forgot password
         Route::post('/forgot-password', [ForgotPasswordController::class, 'sendOtp']); // DONE: send forgot password otp
+        Route::post('/password/resend-otp', [ForgotPasswordController::class, 'resendOtp']);
         Route::post('/verify-otp', [ForgotPasswordController::class, 'verifyOtp']); // DONE: verify forgot password otp
         Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']); // DONE: Reset password
     });
