@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -54,6 +55,21 @@ class User extends Authenticatable implements JWTSubject
         ];
     }
 
+    // -------------------------------------------------------------------------
+    // Role helpers
+    // -------------------------------------------------------------------------
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isUser(): bool
+    {
+        return $this->role === 'user';
+    }
+
+
     /*
     |--------------------------------------------------------------------------
     | Relationships
@@ -62,5 +78,36 @@ class User extends Authenticatable implements JWTSubject
     public function profile(): HasOne
     {
         return $this->hasOne(Profile::class);
+    }
+
+    public function farms(): HasMany
+    {
+        return $this->hasMany(Farm::class, 'admin_id');
+    }
+
+    public function ranches(): HasMany
+    {
+        return $this->hasMany(Ranch::class, 'admin_id');
+    }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(Event::class, 'admin_id');
+    }
+
+    // public function ads(): HasMany
+    // {
+    //     return $this->hasMany(Ad::class, 'admin_id');
+    // }
+
+
+     // -------------------------------------------------------------------------
+    // User relationships (things a regular user does)
+    // -------------------------------------------------------------------------
+
+    /** All visited places (farms, ranches, events) */
+    public function visitedPlaces(): HasMany
+    {
+        return $this->hasMany(VisitedPlace::class);
     }
 }
