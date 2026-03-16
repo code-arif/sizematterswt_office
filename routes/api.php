@@ -107,7 +107,7 @@ Route::group(['prefix' => 'v1'], function ($router) {
 /*
 |--------------------------------------------------------------------------
 | API V2 — Authentication Routes (link-based, no OTP)
-|--------------------------------------------------------------------------
+|-------------------------------------------------------------------------
 */
 Route::group(['prefix' => 'v2'], function () {
     Route::group(['middleware' => 'guest:api'], function () {
