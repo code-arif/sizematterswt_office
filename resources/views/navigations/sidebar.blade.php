@@ -94,6 +94,17 @@
                         <span>Farms Management</span>
                     </a>
                 </li>
+
+                {{-- Ferms --}}
+                <li class="nav-item">
+                    <a class="nav-link menu-link {{ request()->routeIs('admin.ranches.index') ? 'active' : '' }}"
+                        href="{{ route('admin.ranches.index') }}">
+                        <i class="ri-home-office-fill"></i>
+                        <span>Ranches Management</span>
+                    </a>
+                </li>
+
+
                 {{-- ── User Management group ────────────────────────────── --}}
                 @canany(['manage users', 'manage roles', 'manage permissions'])
                     <li class="menu-title">
