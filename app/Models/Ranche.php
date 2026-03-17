@@ -32,6 +32,8 @@ class Ranch extends Model
         'acreage',
         'status',
         'is_featured',
+        'marker_color',
+        'marker_icon',
     ];
 
     protected $casts = [

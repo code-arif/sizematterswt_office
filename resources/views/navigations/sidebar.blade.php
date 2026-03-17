@@ -17,7 +17,8 @@
                 <img src="{{ asset('admin/assets/images/default/logo-sm.png') }}" alt="" height="22">
             </span>
             <span class="logo-lg">
-                <img src="{{ $settings?->logo ? asset('storage/' . $settings?->logo) : asset('admin/assets/images/default/logo.png') }}" alt="" height="50" width="">
+                <img src="{{ $settings?->logo ? asset('storage/' . $settings?->logo) : asset('admin/assets/images/default/logo.png') }}"
+                    alt="" height="50" width="">
                 {{-- {{ $profile?->cover ? asset('storage/' . $profile?->cover) : asset('admin/assets/images/default/profile-bg.jpg') }} --}}
             </span>
         </a>
@@ -85,84 +86,64 @@
                     $contactOpen = request()->routeIs('admin.chat.index', 'admin.mail.index');
                 @endphp
 
+                {{-- Ferms --}}
                 <li class="nav-item">
-                    <a class="nav-link menu-link {{ $contactOpen ? 'active' : '' }}" href="#sidebarMessaging"
-                        data-bs-toggle="collapse" role="button" aria-expanded="{{ $contactOpen ? 'true' : 'false' }}"
-                        aria-controls="sidebarMessaging">
-                        <i class="ri-kakao-talk-line"></i>
-                        <span>Messaging</span>
+                    <a class="nav-link menu-link {{ request()->routeIs('admin.farms.index') ? 'active' : '' }}"
+                        href="{{ route('admin.farms.index') }}">
+                        <i class="ri-home-8-fill"></i>
+                        <span>Farms Management</span>
                     </a>
-
-                    <div class="collapse menu-dropdown {{ $contactOpen ? 'show' : '' }}" id="sidebarMessaging">
-                        <ul class="nav nav-sm flex-column">
-                            <li class="nav-item">
-                                <a href="{{ route('admin.chat.index') }}"
-                                    class="nav-link {{ request()->routeIs('admin.chat.index') ? 'active' : '' }}">
-                                    <i class="ri-wechat-line"></i> Chat
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a href="{{ route('admin.mail.index') }}"
-                                    class="nav-link {{ request()->routeIs('admin.mail.index') ? 'active' : '' }}">
-                                    <i class="ri-mail-unread-line"></i> Mail
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
                 </li>
                 {{-- ── User Management group ────────────────────────────── --}}
                 @canany(['manage users', 'manage roles', 'manage permissions'])
-                <li class="menu-title">
-                    <i class="ri-more-fill"></i>
-                    <span>User Management</span>
-                </li>
-
-                @php
-                    $userMgmtOpen = request()->routeIs('admin.users.*', 'admin.roles.*', 'admin.permissions.*');
-                @endphp
-
-                <li class="nav-item">
-                    <a class="nav-link menu-link {{ $userMgmtOpen ? 'active' : '' }}"
-                        href="#sidebarUserManagement" data-bs-toggle="collapse" role="button"
-                        aria-expanded="{{ $userMgmtOpen ? 'true' : 'false' }}"
-                        aria-controls="sidebarUserManagement">
-                        <i class="ri-shield-user-line"></i>
+                    <li class="menu-title">
+                        <i class="ri-more-fill"></i>
                         <span>User Management</span>
-                    </a>
+                    </li>
 
-                    <div class="collapse menu-dropdown {{ $userMgmtOpen ? 'show' : '' }}"
-                        id="sidebarUserManagement">
-                        <ul class="nav nav-sm flex-column">
-                            @can('manage users')
-                            <li class="nav-item">
-                                <a href="{{ route('admin.users.index') }}"
-                                    class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                                    <i class="ri-user-line"></i> Users
-                                </a>
-                            </li>
-                            @endcan
+                    @php
+                        $userMgmtOpen = request()->routeIs('admin.users.*', 'admin.roles.*', 'admin.permissions.*');
+                    @endphp
 
-                            @canany(['manage roles', 'manage users'])
-                            <li class="nav-item">
-                                <a href="{{ route('admin.roles.index') }}"
-                                    class="nav-link {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}">
-                                    <i class="ri-shield-star-line"></i> Roles
-                                </a>
-                            </li>
-                            @endcanany
+                    <li class="nav-item">
+                        <a class="nav-link menu-link {{ $userMgmtOpen ? 'active' : '' }}" href="#sidebarUserManagement"
+                            data-bs-toggle="collapse" role="button" aria-expanded="{{ $userMgmtOpen ? 'true' : 'false' }}"
+                            aria-controls="sidebarUserManagement">
+                            <i class="ri-shield-user-line"></i>
+                            <span>User Management</span>
+                        </a>
 
-                            @canany(['manage permissions', 'manage users'])
-                            <li class="nav-item">
-                                <a href="{{ route('admin.permissions.index') }}"
-                                    class="nav-link {{ request()->routeIs('admin.permissions.*') ? 'active' : '' }}">
-                                    <i class="ri-key-line"></i> Permissions
-                                </a>
-                            </li>
-                            @endcanany
-                        </ul>
-                    </div>
-                </li>
+                        <div class="collapse menu-dropdown {{ $userMgmtOpen ? 'show' : '' }}" id="sidebarUserManagement">
+                            <ul class="nav nav-sm flex-column">
+                                @can('manage users')
+                                    <li class="nav-item">
+                                        <a href="{{ route('admin.users.index') }}"
+                                            class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                                            <i class="ri-user-line"></i> Users
+                                        </a>
+                                    </li>
+                                @endcan
+
+                                @canany(['manage roles', 'manage users'])
+                                    <li class="nav-item">
+                                        <a href="{{ route('admin.roles.index') }}"
+                                            class="nav-link {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}">
+                                            <i class="ri-shield-star-line"></i> Roles
+                                        </a>
+                                    </li>
+                                @endcanany
+
+                                @canany(['manage permissions', 'manage users'])
+                                    <li class="nav-item">
+                                        <a href="{{ route('admin.permissions.index') }}"
+                                            class="nav-link {{ request()->routeIs('admin.permissions.*') ? 'active' : '' }}">
+                                            <i class="ri-key-line"></i> Permissions
+                                        </a>
+                                    </li>
+                                @endcanany
+                            </ul>
+                        </div>
+                    </li>
                 @endcanany
 
                 {{-- ── Settings group ───────────────────────────────────── --}}

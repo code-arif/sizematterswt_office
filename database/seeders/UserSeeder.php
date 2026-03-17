@@ -16,6 +16,12 @@ class UserSeeder extends Seeder
         $adminRole = Role::where('name', 'admin')->where('guard_name', 'admin')->first();
         $userRole = Role::where('name', 'user')->where('guard_name', 'api')->first();
 
+        /*
+        |--------------------------------------------------------------------------
+        | Super Admin
+        |--------------------------------------------------------------------------
+        */
+
         $superAdmin = User::create([
             'email' => 'superadmin@example.com',
             'phone' => '01710000000',
@@ -26,13 +32,21 @@ class UserSeeder extends Seeder
 
         $superAdmin->assignRole($superAdminRole);
 
-        if (!$superAdmin->profile) {
-            $superAdmin->profile()->create([
-                'name' => 'Super Admin',
-                'username' => FileHandle::generateUsername('Super'),
-                'slug' => FileHandle::generateSlug('Super'),
-            ]);
-        }
+        $superAdmin->profile()->create([
+            'name' => 'Super Admin',
+            'username' => FileHandle::generateUsername('superadmin'),
+            'slug' => FileHandle::generateSlug('super-admin'),
+            'tagline' => 'System Super Administrator',
+            'biography' => 'This is the main system administrator.',
+            'is_agreed' => true,
+            'is_online' => false,
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Admin Users
+        |--------------------------------------------------------------------------
+        */
 
         for ($i = 1; $i <= 2; $i++) {
 
@@ -45,7 +59,23 @@ class UserSeeder extends Seeder
             ]);
 
             $admin->assignRole($adminRole);
+
+            $admin->profile()->create([
+                'name' => "Admin {$i}",
+                'username' => FileHandle::generateUsername("admin{$i}"),
+                'slug' => FileHandle::generateSlug("admin-{$i}"),
+                'tagline' => 'System Administrator',
+                'biography' => 'Administrator account for managing the platform.',
+                'is_agreed' => true,
+                'is_online' => false,
+            ]);
         }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Regular Users
+        |--------------------------------------------------------------------------
+        */
 
         for ($i = 1; $i <= 10; $i++) {
 
@@ -58,6 +88,16 @@ class UserSeeder extends Seeder
             ]);
 
             $user->assignRole($userRole);
+
+            $user->profile()->create([
+                'name' => "User {$i}",
+                'username' => FileHandle::generateUsername("user{$i}"),
+                'slug' => FileHandle::generateSlug("user-{$i}"),
+                'tagline' => 'Platform Member',
+                'biography' => 'This is a sample user account.',
+                'is_agreed' => true,
+                'is_online' => false,
+            ]);
         }
     }
 }
