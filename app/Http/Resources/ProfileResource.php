@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileResource extends JsonResource
 {
@@ -14,7 +15,7 @@ class ProfileResource extends JsonResource
             'name' => $this->name ?? '',
             'username' => $this->username ?? '',
             'avatar' => $this->avatar
-                ? asset($this->avatar)
+                ? url(Storage::url($this->avatar))
                 : asset('admin/default/user.jpg'),
         ];
     }
