@@ -14,7 +14,6 @@ class ProfileResource extends JsonResource
             'id' => $this->id ?? null,
             'name' => $this->name ?? '',
             'username' => $this->username ?? '',
-            'phone' => $this->phone ?? '',
             'avatar' => $this->avatar
                 ? url(Storage::url($this->avatar))
                 : asset('admin/default/user.jpg'),
