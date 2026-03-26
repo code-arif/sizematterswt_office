@@ -120,7 +120,7 @@ Route::group(['prefix' => 'v1'], function ($router) {
     // ── Ranche list / detail ────────────────────────────────────────
     Route::prefix('ranche')->group(function () {
         Route::get('/', [RancheController::class, 'index']); // DONE: ranche list
-        Route::get('/{farm}', [RancheController::class, 'show']); // DONE: ranche details
+        Route::get('/{ranche}', [RancheController::class, 'show']); // DONE: ranche details
     });
 
     // ── Authenticated user routes ────────────────────────────────────────
