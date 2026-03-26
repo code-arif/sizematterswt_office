@@ -125,11 +125,10 @@ Route::group(['prefix' => 'v1'], function ($router) {
 
     // ── Authenticated user routes ────────────────────────────────────────
     Route::middleware('auth:api')->group(function () {
-
         // Favourites
         Route::prefix('favorites')->name('api.favorites.')->group(function () {
-            Route::get('/',              [FavoriteController::class, 'index'])->name('index');
-            Route::post('/',             [FavoriteController::class, 'store'])->name('store');
+            Route::get('/', [FavoriteController::class, 'index'])->name('index');
+            Route::post('/', [FavoriteController::class, 'store'])->name('store');
             Route::delete('/{favorite}', [FavoriteController::class, 'destroy'])->name('destroy');
         });
 
