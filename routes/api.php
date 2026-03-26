@@ -9,6 +9,11 @@ use App\Http\Controllers\Api\Auth\V2\RegisterController as V2RegisterController;
 use App\Http\Controllers\Api\Chat\ConversationController;
 use App\Http\Controllers\Api\Chat\MessageController;
 use App\Http\Controllers\Api\Chat\TypingController;
+use App\Http\Controllers\Api\Farm\FarmController;
+use App\Http\Controllers\Api\Farm\FavoriteController;
+use App\Http\Controllers\Api\Farm\VisitedController;
+use App\Http\Controllers\Api\Map\MapController;
+use App\Http\Controllers\Api\Ranche\RancheController;
 use Illuminate\Support\Facades\Route;
 
 // health check
@@ -101,6 +106,39 @@ Route::group(['prefix' => 'v1'], function ($router) {
         Route::put('/{message}', [MessageController::class, 'update']);
         Route::delete('/{message}', [MessageController::class, 'destroy']);
         Route::post('/{message}/reaction', [MessageController::class, 'toggleReaction']);
+    });
+
+    // ── Global map (no auth needed — public) ────────────────────────────
+    Route::get('/map', [MapController::class, 'index']); // DONE: get gloabal map data
+
+    // ──  Farm list / detail ────────────────────────────────────────
+    Route::group(['prefix' => 'farms', 'middleware' => 'auth:api'], function () {
+        Route::get('/', [FarmController::class, 'index']); // DONE: farm list
+        Route::get('/{farm}', [FarmController::class, 'show']); // DONE: farm details
+    });
+
+    // ── Ranche list / detail ────────────────────────────────────────
+    Route::prefix('ranche')->group(function () {
+        Route::get('/', [RancheController::class, 'index']); // DONE: ranche list
+        Route::get('/{farm}', [RancheController::class, 'show']); // DONE: ranche details
+    });
+
+    // ── Authenticated user routes ────────────────────────────────────────
+    Route::middleware('auth:api')->group(function () {
+
+        // Favourites
+        Route::prefix('favorites')->name('api.favorites.')->group(function () {
+            Route::get('/',              [FavoriteController::class, 'index'])->name('index');
+            Route::post('/',             [FavoriteController::class, 'store'])->name('store');
+            Route::delete('/{favorite}', [FavoriteController::class, 'destroy'])->name('destroy');
+        });
+
+        // Visited
+        Route::prefix('visited')->name('api.visited.')->group(function () {
+            Route::get('/',             [VisitedController::class, 'index'])->name('index');
+            Route::post('/',            [VisitedController::class, 'store'])->name('store');
+            Route::delete('/{visited}', [VisitedController::class, 'destroy'])->name('destroy');
+        });
     });
 });
 

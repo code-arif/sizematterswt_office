@@ -77,9 +77,10 @@ class Farm extends Model
     }
 
     /** Users who have visited this farm */
-    public function visits(): MorphMany
+    public function visitedPlaces(): HasMany
     {
-        return $this->morphMany(VisitedPlace::class, 'visitable');
+        return $this->hasMany(VisitedPlace::class, 'visitable_id')
+            ->where('visitable_type', self::class);
     }
 
     /** Events held at this farm */
@@ -87,6 +88,16 @@ class Farm extends Model
     {
         return $this->morphMany(Event::class, 'eventable');
     }
+
+    /**
+     * Favourite farm
+     */
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(Favorite::class, 'favoriteable_id')
+            ->where('favoriteable_type', self::class);
+    }
+
 
     // -------------------------------------------------------------------------
     // Scopes
