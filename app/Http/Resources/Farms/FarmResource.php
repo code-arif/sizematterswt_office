@@ -30,6 +30,10 @@ class FarmResource extends JsonResource
             'description' => $this->when($request->routeIs('api.farms.show'), $this->description),
             'email'       => $this->when($request->routeIs('api.farms.show'), $this->email),
             'website'     => $this->when($request->routeIs('api.farms.show'), $this->website),
+            'owner_name' => $this->owner_name ?? null,
+            'owner_address' => $this->owner_address ?? null,
+            'owner_phone' => $this->owner_phone ?? null,
+            'owner_avatar'    => $this->owner_avatar ? asset('storage/' . $this->owner_avatar) : asset('admin/default/user.jpg'),
             'media'       => $this->when(
                 $request->routeIs('api.farms.show'),
                 FarmMediaResource::collection($this->whenLoaded('media'))
