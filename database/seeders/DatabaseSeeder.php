@@ -13,7 +13,8 @@ class DatabaseSeeder extends Seeder
             RolesSeeder::class,
             UserSeeder::class,
             SettingSeeder::class,
-            FarmSeeder::class
+            FarmSeeder::class,
+            RanchSeeder::class
         ]);
     }
 }

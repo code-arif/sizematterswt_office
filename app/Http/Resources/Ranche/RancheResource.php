@@ -48,9 +48,8 @@ class RancheResource extends JsonResource
             'owner_address' => $this->owner_address ?? null,
             'owner_phone' => $this->owner_phone ?? null,
             'owner_avatar'    => $this->owner_avatar ? asset('storage/' . $this->owner_avatar) : asset('admin/default/user.jpg'),
-            'media'        => $this->when(
-                $request->routeIs('api.ranches.show'),
-                RancheMediaResource::collection($this->whenLoaded('media'))
+            'media' => RancheMediaResource::collection(
+                $this->whenLoaded('media')
             ),
         ];
     }
