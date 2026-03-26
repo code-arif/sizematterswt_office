@@ -126,17 +126,17 @@ Route::group(['prefix' => 'v1'], function ($router) {
     // ── Authenticated user routes ────────────────────────────────────────
     Route::middleware('auth:api')->group(function () {
         // Favourites
-        Route::prefix('favorites')->name('api.favorites.')->group(function () {
-            Route::get('/', [FavoriteController::class, 'index'])->name('index');
-            Route::post('/', [FavoriteController::class, 'store'])->name('store');
-            Route::delete('/{favorite}', [FavoriteController::class, 'destroy'])->name('destroy');
+        Route::prefix('favorites')->group(function () {
+            Route::get('/', [FavoriteController::class, 'index']); // DONE: favorite list
+            Route::post('/', [FavoriteController::class, 'store'])->name('store'); // DONE: save to favorite list
+            Route::delete('/{favorite}', [FavoriteController::class, 'destroy'])->name('destroy'); // DONE: remove favorite place form list
         });
 
         // Visited
-        Route::prefix('visited')->name('api.visited.')->group(function () {
-            Route::get('/',             [VisitedController::class, 'index'])->name('index');
-            Route::post('/',            [VisitedController::class, 'store'])->name('store');
-            Route::delete('/{visited}', [VisitedController::class, 'destroy'])->name('destroy');
+        Route::prefix('visited')->group(function () {
+            Route::get('/', [VisitedController::class, 'index'])->name('index'); // DONE: visited place list
+            Route::post('/', [VisitedController::class, 'store'])->name('store'); // DONE: store visited place
+            Route::delete('/{visited}', [VisitedController::class, 'destroy'])->name('destroy'); // DONE: remove visited place from list
         });
     });
 });
