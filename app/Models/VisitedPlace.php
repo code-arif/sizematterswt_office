@@ -58,7 +58,7 @@ class VisitedPlace extends Model
     /** All visited ranches for a user */
     public function scopeRanches($query)
     {
-        return $query->where('visitable_type', Ranch::class);
+        return $query->where('visitable_type', Ranche::class);
     }
 
     /** All visited events for a user */
