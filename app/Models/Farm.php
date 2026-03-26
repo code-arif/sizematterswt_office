@@ -77,6 +77,12 @@ class Farm extends Model
     }
 
     /** Users who have visited this farm */
+    public function visits(): MorphMany
+    {
+        return $this->morphMany(VisitedPlace::class, 'visitable');
+    }
+
+    /** Users who have visited this farm */
     public function visitedPlaces(): HasMany
     {
         return $this->hasMany(VisitedPlace::class, 'visitable_id')
