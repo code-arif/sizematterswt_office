@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
@@ -35,6 +36,10 @@ class Event extends Model
         'eventable_type',
         'eventable_id',
         'status',
+        'owner_name',
+        'owner_address',
+        'owner_phone',
+        'owner_avatar',
     ];
 
     protected $casts = [
@@ -68,6 +73,30 @@ class Event extends Model
     public function visits(): MorphMany
     {
         return $this->morphMany(VisitedPlace::class, 'visitable');
+    }
+
+    /** All media files attached to this event */
+    public function media(): HasMany
+    {
+        return $this->hasMany(EventMedia::class);
+    }
+
+    /** Image-only media */
+    public function images(): HasMany
+    {
+        return $this->hasMany(EventMedia::class)->where('media_type', 'image');
+    }
+
+    /** Video-only media */
+    public function videos(): HasMany
+    {
+        return $this->hasMany(EventMedia::class)->where('media_type', 'video');
+    }
+
+    /** Cover media files */
+    public function coverMedia(): HasMany
+    {
+        return $this->hasMany(EventMedia::class)->where('is_cover', true);
     }
 
     // -------------------------------------------------------------------------

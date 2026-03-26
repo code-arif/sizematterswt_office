@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Ranche extends Model
 {
@@ -34,6 +35,10 @@ class Ranche extends Model
         'is_featured',
         'marker_color',
         'marker_icon',
+                'owner_name',
+        'owner_address',
+        'owner_phone',
+        'owner_avatar',
     ];
 
     protected $casts = [
@@ -53,10 +58,10 @@ class Ranche extends Model
         return $this->belongsTo(User::class, 'admin_id');
     }
 
-    public function media(): HasMany
-    {
-        return $this->hasMany(RanchMedia::class);
-    }
+    // public function media(): HasMany
+    // {
+    //     return $this->hasMany(RanchMedia::class);
+    // }
 
     public function images(): HasMany
     {
@@ -109,4 +114,15 @@ class Ranche extends Model
             ->having('distance', '<=', $km)
             ->orderBy('distance');
     }
+
+    public function ransetable(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    public function media(): HasMany
+{
+    // Ekhane 'ranch_id' manually bole dite hobe
+    return $this->hasMany(RanchMedia::class, 'ranch_id');
+}
 }

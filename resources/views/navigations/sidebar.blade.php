@@ -104,6 +104,15 @@
                     </a>
                 </li>
 
+                {{-- Event --}}
+                <li class="nav-item">
+                    <a class="nav-link menu-link {{ request()->routeIs('admin.events.index') ? 'active' : '' }}"
+                        href="{{ route('admin.events.index') }}">
+                        <i class="ri-home-office-fill"></i>
+                        <span>Event Management</span>
+                    </a>
+                </li>
+
 
                 {{-- ── User Management group ────────────────────────────── --}}
                 @canany(['manage users', 'manage roles', 'manage permissions'])
