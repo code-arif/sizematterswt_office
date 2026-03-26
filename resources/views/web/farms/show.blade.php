@@ -27,6 +27,49 @@
                 {{-- ── Left column ─────────────────────────────────────────────── --}}
                 <div class="col-lg-8">
 
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Owner / Contact Person</h5>
+    </div>
+    <div class="card-body">
+        <div class="d-flex align-items-center gap-3">
+            <div class="flex-shrink-0">
+                <img src="{{ $farm->owner_avatar ? asset( $farm->owner_avatar) : asset('admin/assets/images/users/user-dummy-img.jpg') }}"
+                     alt="Owner Avatar"
+                     class="rounded-circle avatar-lg img-thumbnail"
+                     style="width: 70px; height: 70px; object-fit: cover;">
+            </div>
+            <div class="flex-grow-1">
+                <h5 class="fs-15 mb-1">{{ $farm->owner_name ?? 'Not Specified' }}</h5>
+                <p class="text-muted mb-0">Ranch Owner / Primary Contact</p>
+            </div>
+        </div>
+
+        <hr class="text-muted opacity-25">
+
+        <div class="row g-3">
+            <div class="col-lg-6">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="ri-phone-fill text-primary fs-16"></i>
+                    <div>
+                        <small class="text-muted d-block">Owner Phone</small>
+                        <span class="fw-medium">{{ $farm->owner_phone ?? 'N/A' }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="ri-map-pin-user-fill text-success fs-16"></i>
+                    <div>
+                        <small class="text-muted d-block">Owner Address</small>
+                        <span class="fw-medium">{{ $farm->owner_address ?? 'N/A' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
                     {{-- Hero / Thumbnail --}}
                     <div class="card overflow-hidden">
                         <div class="position-relative">

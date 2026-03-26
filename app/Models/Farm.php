@@ -15,6 +15,10 @@ class Farm extends Model
 
     protected $fillable = [
         'admin_id',
+        'owner_name',
+        'owner_address',
+        'owner_phone',
+        'owner_avatar',
         'name',
         'description',
         'address',

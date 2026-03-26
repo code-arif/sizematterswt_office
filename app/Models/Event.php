@@ -76,10 +76,10 @@ class Event extends Model
     }
 
     /** All media files attached to this event */
-    public function media(): HasMany
-    {
-        return $this->hasMany(EventMedia::class);
-    }
+    // public function media(): HasMany
+    // {
+    //     return $this->hasMany(EventMedia::class);
+    // }
 
     /** Image-only media */
     public function images(): HasMany
@@ -134,4 +134,12 @@ class Event extends Model
     {
         return is_null($this->entry_fee) || $this->entry_fee == 0;
     }
+
+    // Relationship section-e giye eivabe likhun:
+
+public function media(): HasMany
+{
+
+    return $this->hasMany(EventMedia::class, 'events_id');
+}
 }

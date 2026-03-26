@@ -113,6 +113,11 @@ class FarmController extends Controller
             'marker_icon'  => ['nullable', 'string', 'max:50'],
             'status'       => ['nullable', 'in:active,inactive,pending'],
             'is_featured'  => ['nullable', 'boolean'],
+             // ── Owner fields ──────────────────────────────────────────────
+            'owner_name'    => ['nullable', 'string', 'max:150'],
+            'owner_address' => ['nullable', 'string', 'max:255'],
+            'owner_phone'   => ['nullable', 'string', 'max:20'],
+            'owner_avatar'  => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ], [
             'name.required'      => 'Farm name is required.',
             'address.required'   => 'Address is required.',
@@ -135,6 +140,14 @@ class FarmController extends Controller
             $thumbnailPath = FileHandle::fileUpload($request->file('thumbnail'), 'farms/thumbnails');
             if (! $thumbnailPath) {
                 return $this->error('Thumbnail upload failed. Please try again.', [], 500);
+            }
+        }
+
+         $ownerAvatarPath = null;
+        if ($request->hasFile('owner_avatar')) {
+            $ownerAvatarPath = FileHandle::fileUpload($request->file('owner_avatar'), 'farms/owners');
+            if (! $ownerAvatarPath) {
+                return $this->error('Owner avatar upload failed. Please try again.', [], 500);
             }
         }
 
@@ -164,6 +177,11 @@ class FarmController extends Controller
             'marker_icon'  => $request->marker_icon  ?? 'farm_pin',
             'status'       => $request->status       ?? 'active',
             'is_featured'  => $request->boolean('is_featured'),
+             // ── Owner fields ──────────────────────────────────────────────
+            'owner_name'    => $request->owner_name,
+            'owner_address' => $request->owner_address,
+            'owner_phone'   => $request->owner_phone,
+            'owner_avatar'  => $ownerAvatarPath,
         ]);
 
         return $this->success('Farm created successfully.', [
@@ -177,11 +195,20 @@ class FarmController extends Controller
     | GET  /admin/farms/{farm}
     |--------------------------------------------------------------------------
     */
-    public function show(Farm $farm): View
-    {
-        $farm->load(['media', 'admin']);
-        return view('web.farms.show', compact('farm'));
-    }
+    // public function show(Farm $farm): View
+    // {
+    //     $farm->load(['media', 'admin']);
+    //     return view('web.farms.show', compact('farm'));
+    // }
+    public function show($id)
+{
+    // Ekhane 'media' eager load kora jate gallery thikmoto pay
+    $farm = Farm::with('media', 'admin')->findOrFail($id);
+
+    return view('web.farms.show', compact('farm'));
+}
+
+
 
     /*
     |--------------------------------------------------------------------------
@@ -219,6 +246,11 @@ class FarmController extends Controller
             'marker_icon'  => ['nullable', 'string', 'max:50'],
             'status'       => ['nullable', 'in:active,inactive,pending'],
             'is_featured'  => ['nullable', 'boolean'],
+             // ── Owner fields ──────────────────────────────────────────────
+            'owner_name'    => ['nullable', 'string', 'max:150'],
+            'owner_address' => ['nullable', 'string', 'max:255'],
+            'owner_phone'   => ['nullable', 'string', 'max:20'],
+            'owner_avatar'  => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
         if ($validator->fails()) {
@@ -234,6 +266,15 @@ class FarmController extends Controller
             $thumbnailPath = FileHandle::fileUpload($request->file('thumbnail'), 'farms/thumbnails');
             if (! $thumbnailPath) {
                 return $this->error('Thumbnail upload failed. Please try again.', [], 500);
+            }
+        }
+
+        $ownerAvatarPath = $farm->owner_avatar;
+        if ($request->hasFile('owner_avatar')) {
+            if ($farm->owner_avatar) FileHandle::fileDelete($farm->owner_avatar);
+            $ownerAvatarPath = FileHandle::fileUpload($request->file('owner_avatar'), 'farms/owners');
+            if (! $ownerAvatarPath) {
+                return $this->error('Owner avatar upload failed. Please try again.', [], 500);
             }
         }
 
@@ -261,6 +302,11 @@ class FarmController extends Controller
             'marker_icon'  => $request->marker_icon  ?? $farm->marker_icon,
             'status'       => $request->status       ?? $farm->status,
             'is_featured'  => $request->boolean('is_featured'),
+             // ── Owner fields ──────────────────────────────────────────────
+            'owner_name'    => $request->owner_name,
+            'owner_address' => $request->owner_address,
+            'owner_phone'   => $request->owner_phone,
+            'owner_avatar'  => $ownerAvatarPath,
         ]);
 
         return $this->success('Farm updated successfully.', [
@@ -314,4 +360,7 @@ class FarmController extends Controller
             ['is_featured' => $farm->is_featured]
         );
     }
+
+
+
 }

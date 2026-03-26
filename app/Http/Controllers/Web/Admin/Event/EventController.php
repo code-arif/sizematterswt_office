@@ -103,7 +103,7 @@ class EventController extends Controller
             'owner_name'          => ['required', 'string', 'max:150'],
             'owner_address'          => ['required', 'string', 'max:550'],
             'owner_phone'          => ['required', 'string', 'max:20'],
-            'owner_avatar'          => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'owner_avatar'          => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'description'    => ['nullable', 'string', 'max:2000'],
             'address'        => ['required', 'string', 'max:255'],
             'city'           => ['nullable', 'string', 'max:100'],
@@ -191,11 +191,14 @@ class EventController extends Controller
     | GET  /admin/events/{event}
     |--------------------------------------------------------------------------
     */
-    public function show(Event $event): View
-    {
-        $event->load(['media', 'admin', 'eventable']);
-        return view('web.events.show', compact('event'));
-    }
+
+    public function show($id)
+{
+    // Ekhane 'media' eager load kora jate gallery thikmoto pay
+    $event = Event::with('media', 'admin')->findOrFail($id);
+
+    return view('web.events.show', compact('event'));
+}
 
     /*
     |--------------------------------------------------------------------------
@@ -255,7 +258,7 @@ class EventController extends Controller
         }
                     $owner_avatar = null;
         if ($request->hasFile('owner_avatar')) {
-            $owner_avatar = FileHandle::fileUpload($request->file('image'), 'events/images/owner_avatar/');
+            $owner_avatar = FileHandle::fileUpload($request->file('owner_avatar'), 'events/images/owner_avatar/');
             if (! $owner_avatar) {
                 return $this->error('Image upload failed. Please try again.', [], 500);
             }

@@ -149,7 +149,7 @@
                     confirmText: 'Yes, delete it',
                 }).then(confirmed => {
                     if (!confirmed) return;
-                    axios.delete(`/admin/ranches/${id}`, {
+                    axios.delete(`/ranches/${id}`, {
                             data: {
                                 _token: document.querySelector('meta[name="csrf-token"]')
                                     .content

@@ -8,6 +8,7 @@
 
             {{-- ── Page Title ──────────────────────────────────────────────────── --}}
             <div class="row">
+                                      {{-- Owner Information --}}
                 <div class="col-12">
                     <div class="page-title-box d-sm-flex align-items-center justify-content-between bg-galaxy-transparent">
                         <h4 class="mb-sm-0">Add New Farm</h4>
@@ -28,6 +29,56 @@
 
                     {{-- ── Left column ─────────────────────────────────────────── --}}
                     <div class="col-lg-8">
+
+                        <div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Owner Information</h5>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            {{-- Owner Name --}}
+            <div class="col-lg-6">
+                <label for="owner_name" class="form-label">Owner Name</label>
+                <input type="text" class="form-control" id="owner_name" name="owner_name"
+                    placeholder="Enter owner name">
+                <div class="text-danger small mt-1" id="error-owner_name"></div>
+            </div>
+
+            {{-- Owner Phone --}}
+            <div class="col-lg-6">
+                <label for="owner_phone" class="form-label">Owner Phone</label>
+                <input type="text" class="form-control" id="owner_phone" name="owner_phone"
+                    placeholder="Enter owner phone">
+                <div class="text-danger small mt-1" id="error-owner_phone"></div>
+            </div>
+
+            {{-- Owner Address --}}
+            <div class="col-12">
+                <label for="owner_address" class="form-label">Owner Address</label>
+                <input type="text" class="form-control" id="owner_address" name="owner_address"
+                    placeholder="Enter owner address">
+                <div class="text-danger small mt-1" id="error-owner_address"></div>
+            </div>
+
+            {{-- Owner Avatar --}}
+            <div class="col-12">
+                <label for="owner_avatar" class="form-label">Owner Avatar</label>
+                <div class="d-flex align-items-start gap-3">
+                    <img id="ownerAvatarPreview"
+                         src="{{ asset('admin/assets/images/users/user-dummy-img.jpg') }}"
+                         class="rounded-circle avatar-lg img-thumbnail"
+                         style="width: 80px; height: 80px; object-fit: cover;" alt="Owner Avatar">
+                    <div class="flex-grow-1">
+                        <input type="file" class="form-control" id="owner_avatar" name="owner_avatar"
+                            accept="image/jpeg,image/png,image/webp">
+                        <small class="text-muted">JPG, PNG, WEBP — max 2 MB</small>
+                        <div class="text-danger small mt-1" id="error-owner_avatar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
                         {{-- Basic Info --}}
                         <div class="card">
@@ -581,6 +632,22 @@ document.addEventListener('DOMContentLoaded', function () {
         reader.onload = e => document.getElementById('thumbnailPreview').src = e.target.result;
         reader.readAsDataURL(file);
     });
+
+
+    /*-----------Owner image preview-------------------------*/
+
+    // Owner Avatar Preview
+document.getElementById('owner_avatar').addEventListener('change', function(e) {
+    const preview = document.getElementById('ownerAvatarPreview');
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+});
 
     /* ── Marker color sync ──────────────────────────────────────────────── */
     const picker    = document.getElementById('markerColorPicker');

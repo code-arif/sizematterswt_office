@@ -35,7 +35,7 @@
     <div class="card-body">
         <div class="d-flex align-items-center gap-3">
             <div class="flex-shrink-0">
-                <img src="{{ $ranch->owner_avatar ? asset('storage/' . $ranch->owner_avatar) : asset('admin/assets/images/users/user-dummy-img.jpg') }}"
+                <img src="{{ $ranch->owner_avatar ? asset( $ranch->owner_avatar) : asset('admin/assets/images/users/user-dummy-img.jpg') }}"
                      alt="Owner Avatar"
                      class="rounded-circle avatar-lg img-thumbnail"
                      style="width: 70px; height: 70px; object-fit: cover;">

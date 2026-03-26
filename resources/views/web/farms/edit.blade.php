@@ -26,7 +26,61 @@
                 @csrf
 
                 <div class="row g-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Owner Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                {{-- Owner Name --}}
+                                <div class="col-lg-6">
+                                    <label for="owner_name" class="form-label">Owner Name <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="owner_name" name="owner_name"
+                                        value="{{ old('owner_name', $farm->owner_name) }}" placeholder="Enter owner name">
+                                    <div class="text-danger small mt-1" id="error-owner_name"></div>
+                                </div>
 
+                                {{-- Owner Phone --}}
+                                <div class="col-lg-6">
+                                    <label for="owner_phone" class="form-label">Owner Phone</label>
+                                    <input type="text" class="form-control" id="owner_phone" name="owner_phone"
+                                        value="{{ old('owner_phone', $farm->owner_phone) }}"
+                                        placeholder="Enter owner phone">
+                                    <div class="text-danger small mt-1" id="error-owner_phone"></div>
+                                </div>
+
+                                {{-- Owner Address --}}
+                                <div class="col-12">
+                                    <label for="owner_address" class="form-label">Owner Address</label>
+                                    <input type="text" class="form-control" id="owner_address" name="owner_address"
+                                        value="{{ old('owner_address', $farm->owner_address) }}"
+                                        placeholder="Enter owner address">
+                                    <div class="text-danger small mt-1" id="error-owner_address"></div>
+                                </div>
+
+                                {{-- Owner Avatar --}}
+                                <div class="col-12">
+                                    <label for="owner_avatar" class="form-label">Owner Avatar</label>
+                                    <div class="d-flex align-items-start gap-3">
+                                        {{-- Database e image thakle seta dekhabe, na thakle default dummy image --}}
+                                        <img id="ownerAvatarPreview"
+                                            src="{{ $farm->owner_avatar ? asset( $farm->owner_avatar) : asset('admin/assets/images/users/user-dummy-img.jpg') }}"
+                                            class="rounded-circle avatar-lg img-thumbnail"
+                                            style="width: 80px; height: 80px; object-fit: cover;" alt="Owner Avatar">
+
+                                        <div class="flex-grow-1">
+                                            <input type="file" class="form-control" id="owner_avatar" name="owner_avatar"
+                                                accept="image/jpeg,image/png,image/webp">
+                                            <small class="text-muted">Leave blank to keep current avatar. JPG, PNG, WEBP —
+                                                max 2 MB</small>
+                                            <div class="text-danger small mt-1" id="error-owner_avatar"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     {{-- ── Left column ─────────────────────────────────────────── --}}
                     <div class="col-lg-8">
 
@@ -574,6 +628,16 @@ document.addEventListener('DOMContentLoaded', function () {
         reader.onload = e => document.getElementById('thumbnailPreview').src = e.target.result;
         reader.readAsDataURL(file);
     });
+
+       // Avatar change korle instant preview dekhabe
+        document.getElementById('owner_avatar').addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => document.getElementById('ownerAvatarPreview').src = e.target.result;
+                reader.readAsDataURL(file);
+            }
+        });
 
     const picker    = document.getElementById('markerColorPicker');
     const colorText = document.getElementById('marker_color');

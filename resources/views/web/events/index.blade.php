@@ -160,7 +160,7 @@
                     confirmText: 'Yes, delete it',
                 }).then(confirmed => {
                     if (!confirmed) return;
-                    axios.delete(`/admin/events/${id}`, {
+                    axios.delete(`/events/${id}`, {
                             data: {
                                 _token: document.querySelector('meta[name="csrf-token"]').content
                             }
