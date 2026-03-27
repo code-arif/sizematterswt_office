@@ -37,6 +37,9 @@ class MapItemResource extends JsonResource
             'marker_icon'  => $this->marker_icon,
             'status'       => $this->status,
             'is_featured'  => $this->is_featured,
+            'owner_name' => $this->owner_name ?? null,
+            'owner_address' => $this->owner_address ?? null,
+            'owner_phone' => $this->owner_phone ?? null,
         ];
     }
 
