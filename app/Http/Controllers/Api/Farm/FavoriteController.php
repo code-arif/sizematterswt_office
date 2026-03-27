@@ -35,9 +35,9 @@ class FavoriteController extends Controller
         // Filter by type
         if ($request->filled('type')) {
             $typeMap = [
-                'farm'  => Farm::class,
-                'ranch' => Ranche::class,
-                'event' => Event::class,
+                'farms'  => Farm::class,
+                'ranches' => Ranche::class,
+                'events' => Event::class,
             ];
             $morphType = $typeMap[$request->type] ?? null;
             if ($morphType) {
