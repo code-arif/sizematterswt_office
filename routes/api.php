@@ -126,8 +126,8 @@ Route::group(['prefix' => 'v1'], function ($router) {
 
     // Public event list / detail
     Route::prefix('events')->name('api.events.')->group(function () {
-        Route::get('/', [EventController::class, 'index'])->name('index');
-        Route::get('/{event}', [EventController::class, 'show'])->name('show');
+        Route::get('/', [EventController::class, 'index'])->name('index'); // DONE: event list
+        Route::get('/{event}', [EventController::class, 'show'])->name('show'); // DONE: event details
     });
 
     // ── Authenticated user routes ────────────────────────────────────────
