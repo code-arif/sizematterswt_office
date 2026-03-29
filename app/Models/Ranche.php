@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\VisitedPlace;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ranche extends Model
 {
@@ -35,7 +36,7 @@ class Ranche extends Model
         'is_featured',
         'marker_color',
         'marker_icon',
-                'owner_name',
+        'owner_name',
         'owner_address',
         'owner_phone',
         'owner_avatar',
@@ -121,8 +122,19 @@ class Ranche extends Model
     }
 
     public function media(): HasMany
-{
-    // Ekhane 'ranch_id' manually bole dite hobe
-    return $this->hasMany(RanchMedia::class, 'ranch_id');
-}
+    {
+        return $this->hasMany(RanchMedia::class, 'ranch_id');
+    }
+
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(\App\Models\Favorite::class, 'favoriteable_id')
+            ->where('favoriteable_type', self::class);
+    }
+
+    public function visitedPlaces(): HasMany
+    {
+        return $this->hasMany(VisitedPlace::class, 'visitable_id')
+            ->where('visitable_type', self::class);
+    }
 }

@@ -13,18 +13,9 @@ class RancheController extends Controller
 {
     use ApiResponse;
 
-    /**
-     * GET /api/v1/ranches
-     * ─────────────────────────────────────────────────────────────────────
-     * List + search ranches (paginated)
-     *
-     * Query params:
-     *   ?search=sundown          → name / address / city / tags
-     *   ?featured=1              → featured only
-     *   ?per_page=15             → max 50
-     */
     public function index(Request $request): JsonResponse
     {
+        $user  = auth('api')->user();
         $query = Ranche::query()->where('status', 'active');
 
         if ($request->filled('search')) {
@@ -41,6 +32,14 @@ class RancheController extends Controller
             $query->where('is_featured', true);
         }
 
+        // Eager load to avoid N+1
+        if ($user) {
+            $query->with([
+                'favorites'     => fn($q) => $q->where('user_id', $user->id),
+                'visitedPlaces' => fn($q) => $q->where('user_id', $user->id),
+            ]);
+        }
+
         $perPage = min((int) $request->get('per_page', 15), 50);
         $ranches = $query->latest()->paginate($perPage);
 
@@ -55,23 +54,29 @@ class RancheController extends Controller
         ]);
     }
 
-    /**
-     * GET /api/v1/ranches/{ranch}
-     * ─────────────────────────────────────────────────────────────────────
-     * Single ranch detail — includes media gallery
-     */
     public function show($id): JsonResponse
     {
-        $farm = Ranche::with('media')
-            ->active()
-            ->find($id);
+        $user  = auth('api')->user();
+        $query = Ranche::active();
 
-        if (!$farm) {
+        if ($user) {
+            $query->with([
+                'media',
+                'favorites'     => fn($q) => $q->where('user_id', $user->id),
+                'visitedPlaces' => fn($q) => $q->where('user_id', $user->id),
+            ]);
+        } else {
+            $query->with('media');
+        }
+
+        $ranche = $query->find($id);
+
+        if (! $ranche) {
             return $this->error('Ranche not found.', null, 404);
         }
 
         return $this->success('Ranche retrieved successfully.', [
-            'farm' => new RancheResource($farm),
+            'ranche' => new RancheResource($ranche),
         ]);
     }
 }

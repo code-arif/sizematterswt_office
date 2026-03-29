@@ -108,7 +108,7 @@
                 <li class="nav-item">
                     <a class="nav-link menu-link {{ request()->routeIs('admin.events.index') ? 'active' : '' }}"
                         href="{{ route('admin.events.index') }}">
-                        <i class="ri-home-office-fill"></i>
+                        <i class="ri-calendar-event-line"></i>
                         <span>Event Management</span>
                     </a>
                 </li>

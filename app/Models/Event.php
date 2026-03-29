@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Favorite;
+use App\Models\VisitedPlace;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Event extends Model
 {
@@ -126,6 +128,18 @@ class Event extends Model
             ->orderBy('distance');
     }
 
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(Favorite::class, 'favoriteable_id')
+            ->where('favoriteable_type', self::class);
+    }
+
+    public function visitedPlaces(): HasMany
+    {
+        return $this->hasMany(VisitedPlace::class, 'visitable_id')
+            ->where('visitable_type', self::class);
+    }
+
     // -------------------------------------------------------------------------
     // Helpers
     // -------------------------------------------------------------------------
@@ -136,10 +150,9 @@ class Event extends Model
     }
 
     // Relationship section-e giye eivabe likhun:
+    public function media(): HasMany
+    {
 
-public function media(): HasMany
-{
-
-    return $this->hasMany(EventMedia::class, 'events_id');
-}
+        return $this->hasMany(EventMedia::class, 'events_id');
+    }
 }

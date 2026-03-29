@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Auth\V2\RegisterController as V2RegisterController;
 use App\Http\Controllers\Api\Chat\ConversationController;
 use App\Http\Controllers\Api\Chat\MessageController;
 use App\Http\Controllers\Api\Chat\TypingController;
+use App\Http\Controllers\Api\Event\EventController;
 use App\Http\Controllers\Api\Farm\FarmController;
 use App\Http\Controllers\Api\Farm\FavoriteController;
 use App\Http\Controllers\Api\Farm\VisitedController;
@@ -108,19 +109,25 @@ Route::group(['prefix' => 'v1'], function ($router) {
         Route::post('/{message}/reaction', [MessageController::class, 'toggleReaction']);
     });
 
-    // ── Global map (no auth needed — public) ────────────────────────────
+    // Global map (no auth needed — public)
     Route::get('/map', [MapController::class, 'index']); // DONE: get gloabal map data
 
-    // ──  Farm list / detail ────────────────────────────────────────
+    // Farm list / detail
     Route::group(['prefix' => 'farms', 'middleware' => 'auth:api'], function () {
         Route::get('/', [FarmController::class, 'index']); // DONE: farm list
         Route::get('/{farm}', [FarmController::class, 'show']); // DONE: farm details
     });
 
-    // ── Ranche list / detail ────────────────────────────────────────
+    // Ranche list / detail
     Route::prefix('ranche')->group(function () {
         Route::get('/', [RancheController::class, 'index']); // DONE: ranche list
         Route::get('/{ranche}', [RancheController::class, 'show']); // DONE: ranche details
+    });
+
+    // Public event list / detail
+    Route::prefix('events')->name('api.events.')->group(function () {
+        Route::get('/',[EventController::class, 'index'])->name('index');
+        Route::get('/{event}',[EventController::class, 'show'])->name('show');
     });
 
     // ── Authenticated user routes ────────────────────────────────────────

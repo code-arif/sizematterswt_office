@@ -16,18 +16,12 @@ class FarmController extends Controller
     /**
      * GET /api/v1/farms
      * List + search farms (paginated)
-     *
-     * Query params:
-     *   ?search=green valley
-     *   ?per_page=15
-     *   ?featured=1
-     *   ?status=active
      */
     public function index(Request $request): JsonResponse
     {
+        $user  = auth('api')->user();
         $query = Farm::query()->where('status', 'active');
 
-        // Full-text search across name / address / city / tags
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -40,6 +34,14 @@ class FarmController extends Controller
 
         if ($request->boolean('featured')) {
             $query->where('is_featured', true);
+        }
+
+        // Eager load user's favorites + visited to avoid N+1
+        if ($user) {
+            $query->with([
+                'favorites' => fn($q) => $q->where('user_id', $user->id),
+                'visitedPlaces' => fn($q) => $q->where('user_id', $user->id),
+            ]);
         }
 
         $perPage = min((int) $request->get('per_page', 15), 50);
