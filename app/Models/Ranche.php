@@ -59,10 +59,10 @@ class Ranche extends Model
         return $this->belongsTo(User::class, 'admin_id');
     }
 
-    // public function media(): HasMany
-    // {
-    //     return $this->hasMany(RanchMedia::class);
-    // }
+    public function media(): HasMany
+    {
+        return $this->hasMany(RanchMedia::class);
+    }
 
     public function images(): HasMany
     {
@@ -119,11 +119,6 @@ class Ranche extends Model
     public function ransetable(): MorphTo
     {
         return $this->morphTo();
-    }
-
-    public function media(): HasMany
-    {
-        return $this->hasMany(RanchMedia::class, 'ranch_id');
     }
 
     public function favorites(): HasMany

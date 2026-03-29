@@ -119,15 +119,15 @@ Route::group(['prefix' => 'v1'], function ($router) {
     });
 
     // Ranche list / detail
-    Route::prefix('ranche')->group(function () {
-        Route::get('/', [RancheController::class, 'index']); // DONE: ranche list
-        Route::get('/{ranche}', [RancheController::class, 'show']); // DONE: ranche details
+    Route::prefix('ranche')->name('api.events.')->group(function () {
+        Route::get('/', [RancheController::class, 'index'])->name('index'); // DONE: ranche list
+        Route::get('/{ranche}', [RancheController::class, 'show'])->name('show'); // DONE: ranche details
     });
 
     // Public event list / detail
     Route::prefix('events')->name('api.events.')->group(function () {
-        Route::get('/',[EventController::class, 'index'])->name('index');
-        Route::get('/{event}',[EventController::class, 'show'])->name('show');
+        Route::get('/', [EventController::class, 'index'])->name('index');
+        Route::get('/{event}', [EventController::class, 'show'])->name('show');
     });
 
     // ── Authenticated user routes ────────────────────────────────────────
