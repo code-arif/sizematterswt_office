@@ -66,7 +66,7 @@ class RegisterController extends Controller
                     'expires_at' => now()->addMinutes(60),
                 ]);
 
-                // Mail::to($user->email)->send(new RegistrationOtpMail($otp, $user, 'Verify Your Email Address'));
+                Mail::to($existingUser->email)->send(new RegistrationOtpMail($otp, $existingUser, 'Verify Your Email Address'));
 
                 DB::commit();
 
@@ -113,7 +113,7 @@ class RegisterController extends Controller
                 'expires_at' => now()->addMinutes(60),
             ]);
 
-            // Mail::to($user->email)->send(new RegistrationOtpMail($otp, $user, 'Verify Your Email Address'));
+            Mail::to($user->email)->send(new RegistrationOtpMail($otp, $user, 'Verify Your Email Address'));
 
             DB::commit();
 
@@ -229,7 +229,7 @@ class RegisterController extends Controller
                 'expires_at' => now()->addMinutes(60),
             ]);
 
-            // Mail::to($user->email)->queue(new OtpMail($otp, $user, 'Verify Your Email Address'));
+            Mail::to($user->email)->queue(new RegistrationOtpMail($otp, $user, 'Verify Your Email Address'));
 
             return $this->success(
                 'A new OTP has been sent to your email.',

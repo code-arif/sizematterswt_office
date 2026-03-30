@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\Api\OtpMail;
 use App\Models\User;
 use App\Models\UserSecurityToken;
 use App\Traits\ApiResponse;
@@ -10,6 +11,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class ForgotPasswordController extends Controller
@@ -65,8 +67,8 @@ class ForgotPasswordController extends Controller
                 'expires_at' => now()->addMinutes(60),
             ]);
 
-            // Mail::to($user->email)
-            //     ->queue(new OtpMail($otp, $user, 'Reset Your Password - SecAAX'));
+            Mail::to($user->email)
+                ->send(new OtpMail($otp, $user, 'Reset Your Password'));
 
             return $this->success(
                 'OTP sent successfully.',
@@ -222,8 +224,8 @@ class ForgotPasswordController extends Controller
                 'expires_at' => now()->addMinutes(60),
             ]);
 
-            // Mail::to($user->email)
-            //     ->queue(new OtpMail($otp, $user, 'Reset Your Password - SecAAX'));
+            Mail::to($user->email)
+                ->send(new OtpMail($otp, $user, 'Reset Your Password - SecAAX'));
 
             return $this->success(
                 'OTP resent successfully.',
