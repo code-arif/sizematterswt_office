@@ -113,9 +113,18 @@
                     </a>
                 </li>
 
+                {{-- Event --}}
+                <li class="nav-item">
+                    <a class="nav-link menu-link"
+                        href="#">
+                        <i class="ri-customer-service-line"></i>
+                        <span>Ads Management <small class="text-muted">(pending)</small></span>
+                    </a>
+                </li>
+
 
                 {{-- ── User Management group ────────────────────────────── --}}
-                @canany(['manage users', 'manage roles', 'manage permissions'])
+                {{-- @canany(['manage users', 'manage roles', 'manage permissions'])
                     <li class="menu-title">
                         <i class="ri-more-fill"></i>
                         <span>User Management</span>
@@ -164,7 +173,7 @@
                             </ul>
                         </div>
                     </li>
-                @endcanany
+                @endcanany --}}
 
                 {{-- ── Settings group ───────────────────────────────────── --}}
                 <li class="menu-title">
@@ -225,19 +234,19 @@
                                 </a>
                             </li>
 
-                            <li class="nav-item">
+                            {{-- <li class="nav-item">
                                 <a href="{{ route('admin.settings.seo') }}"
                                     class="nav-link {{ request()->routeIs('admin.settings.seo') ? 'active' : '' }}">
                                     <i class="ri-search-eye-line"></i> SEO Settings
                                 </a>
-                            </li>
+                            </li> --}}
 
-                            <li class="nav-item">
+                            {{-- <li class="nav-item">
                                 <a href="{{ route('admin.settings.app') }}"
                                     class="nav-link {{ request()->routeIs('admin.settings.app') ? 'active' : '' }}">
                                     <i class="ri-apps-line"></i> App Setting
                                 </a>
-                            </li>
+                            </li> --}}
 
                             <li class="nav-item">
                                 <a href="{{ route('admin.settings.mail') }}"
@@ -246,40 +255,41 @@
                                 </a>
                             </li>
 
-                            <li class="nav-item">
+                            {{-- <li class="nav-item">
                                 <a href="{{ route('admin.settings.stripe') }}"
                                     class="nav-link {{ request()->routeIs('admin.settings.stripe') ? 'active' : '' }}">
                                     <i class="ri-bank-card-line"></i> Stripe Settings
                                 </a>
-                            </li>
+                            </li> --}}
 
-                            <li class="nav-item">
+
+                            {{-- <li class="nav-item">
                                 <a href="{{ route('admin.settings.reverb') }}"
                                     class="nav-link {{ request()->routeIs('admin.settings.reverb') ? 'active' : '' }}">
                                     <i class="ri-broadcast-line"></i> Reverb Settings
                                 </a>
-                            </li>
+                            </li> --}}
 
-                            <li class="nav-item">
+                            {{-- <li class="nav-item">
                                 <a href="{{ route('admin.settings.aws') }}"
                                     class="nav-link {{ request()->routeIs('admin.settings.aws') ? 'active' : '' }}">
                                     <i class="ri-cloud-line"></i> AWS Settings
                                 </a>
-                            </li>
+                            </li> --}}
 
-                            <li class="nav-item">
+                            {{-- <li class="nav-item">
                                 <a href="{{ route('admin.settings.imap') }}"
                                     class="nav-link {{ request()->routeIs('admin.settings.imap') ? 'active' : '' }}">
                                     <i class="ri-mail-send-line"></i> IMAP Settings
                                 </a>
-                            </li>
+                            </li> --}}
 
-                            <li class="nav-item">
+                            {{-- <li class="nav-item">
                                 <a href="{{ route('admin.settings.maintenance') }}"
                                     class="nav-link {{ request()->routeIs('admin.settings.maintenance') ? 'active' : '' }}">
                                     <i class="ri-tools-line"></i> Maintenance
                                 </a>
-                            </li>
+                            </li> --}}
 
                         </ul>
                     </div>

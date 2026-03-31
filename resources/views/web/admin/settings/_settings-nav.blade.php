@@ -23,48 +23,48 @@
                     class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-3 py-2 {{ request()->routeIs('admin.settings.social') ? 'active' : '' }}">
                     <i class="ri-share-line fs-15"></i> Social Media
                 </a>
-                <a href="{{ route('admin.settings.seo') }}"
+                {{-- <a href="{{ route('admin.settings.seo') }}"
                     class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-3 py-2 {{ request()->routeIs('admin.settings.seo') ? 'active' : '' }}">
                     <i class="ri-seo-line fs-15"></i> SEO
-                </a>
+                </a> --}}
 
                 {{-- Integrations --}}
                 <div class="list-group-item py-2 px-3 bg-light">
                     <span class="text-muted text-uppercase fw-semibold fs-11">Integrations</span>
                 </div>
-                <a href="{{ route('admin.settings.app') }}"
+                {{-- <a href="{{ route('admin.settings.app') }}"
                     class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-3 py-2 {{ request()->routeIs('admin.settings.app') ? 'active' : '' }}">
                     <i class="ri-apps-line"></i> App (.env)
-                </a>
+                </a> --}}
                 <a href="{{ route('admin.settings.mail') }}"
                     class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-3 py-2 {{ request()->routeIs('admin.settings.mail') ? 'active' : '' }}">
                     <i class="ri-mail-settings-line fs-15"></i> Mail (SMTP)
                 </a>
-                <a href="{{ route('admin.settings.stripe') }}"
+                {{-- <a href="{{ route('admin.settings.stripe') }}"
                     class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-3 py-2 {{ request()->routeIs('admin.settings.stripe') ? 'active' : '' }}">
                     <i class="ri-bank-card-line fs-15"></i> Stripe
-                </a>
-                <a href="{{ route('admin.settings.reverb') }}"
+                </a> --}}
+                {{-- <a href="{{ route('admin.settings.reverb') }}"
                     class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-3 py-2 {{ request()->routeIs('admin.settings.reverb') ? 'active' : '' }}">
                     <i class="ri-broadcast-line fs-15"></i> Reverb (WebSocket)
-                </a>
-                <a href="{{ route('admin.settings.aws') }}"
+                </a> --}}
+                {{-- <a href="{{ route('admin.settings.aws') }}"
                     class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-3 py-2 {{ request()->routeIs('admin.settings.aws') ? 'active' : '' }}">
                     <i class="ri-cloud-line fs-15"></i> AWS S3
-                </a>
-                <a href="{{ route('admin.settings.imap') }}"
+                </a> --}}
+                {{-- <a href="{{ route('admin.settings.imap') }}"
                     class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-3 py-2 {{ request()->routeIs('admin.settings.imap') ? 'active' : '' }}">
                     <i class="ri-inbox-line fs-15"></i> IMAP
-                </a>
+                </a> --}}
 
                 {{-- System --}}
-                <div class="list-group-item py-2 px-3 bg-light">
+                {{-- <div class="list-group-item py-2 px-3 bg-light">
                     <span class="text-muted text-uppercase fw-semibold fs-11">System</span>
-                </div>
-                <a href="{{ route('admin.settings.maintenance') }}"
+                </div> --}}
+                {{-- <a href="{{ route('admin.settings.maintenance') }}"
                     class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-3 py-2 {{ request()->routeIs('admin.settings.maintenance') ? 'active' : '' }}">
                     <i class="ri-tools-line fs-15"></i> Maintenance
-                </a>
+                </a> --}}
 
             </div>
         </div>
