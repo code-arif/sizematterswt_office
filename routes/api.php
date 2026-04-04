@@ -130,7 +130,7 @@ Route::group(['prefix' => 'v1'], function ($router) {
         Route::get('/{event}', [EventController::class, 'show'])->name('show'); // DONE: event details
     });
 
-    // ── Authenticated user routes ────────────────────────────────────────
+    // Authenticated user routes
     Route::middleware('auth:api')->group(function () {
         // Favourites
         Route::prefix('favorites')->group(function () {
@@ -152,20 +152,20 @@ Route::group(['prefix' => 'v1'], function ($router) {
 /*
 |--------------------------------------------------------------------------
 | API V2 — Authentication Routes (link-based, no OTP)
-|-------------------------------------------------------------------------
+|--------------------------------------------------------------------------
 */
 Route::group(['prefix' => 'v2'], function () {
     Route::group(['middleware' => 'guest:api'], function () {
 
-        // ── Registration ──────────────────────────────────────────────────────
+        // Registration
         Route::post('/register', [V2RegisterController::class, 'register']); // DONE: user registration
         Route::get('/verify-email', [V2RegisterController::class, 'verifyEmail']); // DONE: otp verification
         Route::post('/resend-verification', [V2RegisterController::class, 'resendVerification']); // DONE: resend verification token
 
-        // ── Login (reuse v1 LoginController) ─────────────────────────────────
+        // Login (reuse v1 LoginController)
         Route::post('/login', [LoginController::class, 'login']); // DONE: user login
 
-        // ── Forgot Password ───────────────────────────────────────────────────
+        // Forgot Password
         Route::post('/forgot-password', [V2ForgotPasswordController::class, 'sendResetLink']); // DONE: forgot password
         Route::get('/verify-reset-token', [V2ForgotPasswordController::class, 'verifyResetToken']); // DONE: verify password reset token
         Route::post('/reset-password', [V2ForgotPasswordController::class, 'resetPassword']); // DONE: Set new password

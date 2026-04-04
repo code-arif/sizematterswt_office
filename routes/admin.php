@@ -1,12 +1,13 @@
 <?php
 
+use App\Http\Controllers\Web\Admin\Ad\AdvertisementController;
 use App\Http\Controllers\Web\Admin\Auth\AdminProfileController;
 use App\Http\Controllers\Web\Admin\Contact\AdminChattingController;
 use App\Http\Controllers\Web\Admin\Contact\AdminMailingController;
 use App\Http\Controllers\Web\Admin\Dashboard\AdminDashboardController;
+use App\Http\Controllers\Web\Admin\Event\EventController;
 use App\Http\Controllers\Web\Admin\Firm\FarmController;
 use App\Http\Controllers\Web\Admin\Ranches\RanchController;
-use App\Http\Controllers\Web\Admin\Event\EventController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AdminDashboardController::class, 'index'])->name('show.admin.dashboard'); // show admin dashboard
@@ -77,16 +78,16 @@ Route::prefix('farms')->name('admin.farms.')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::prefix('ranches')->name('admin.ranches.')->group(function () {
-    Route::get('/',[RanchController::class, 'index'])->name('index');
-    Route::get('/datatable',[RanchController::class, 'datatable'])->name('datatable');
-    Route::get('/create',[RanchController::class, 'create'])->name('create');
-    Route::post('/',[RanchController::class, 'store'])->name('store');
-    Route::get('/{ranch}',[RanchController::class, 'show'])->name('show');
-    Route::get('/{ranch}/edit',[RanchController::class, 'edit'])->name('edit');
-    Route::post('/{ranch}',[RanchController::class, 'update'])->name('update');
-    Route::delete('/{ranch}',[RanchController::class, 'destroy'])->name('destroy');
-    Route::patch('/{ranch}/toggle-status',[RanchController::class, 'toggleStatus'])->name('toggle-status');
-    Route::patch('/{ranch}/toggle-featured',[RanchController::class, 'toggleFeatured'])->name('toggle-featured');
+    Route::get('/', [RanchController::class, 'index'])->name('index');
+    Route::get('/datatable', [RanchController::class, 'datatable'])->name('datatable');
+    Route::get('/create', [RanchController::class, 'create'])->name('create');
+    Route::post('/', [RanchController::class, 'store'])->name('store');
+    Route::get('/{ranch}', [RanchController::class, 'show'])->name('show');
+    Route::get('/{ranch}/edit', [RanchController::class, 'edit'])->name('edit');
+    Route::post('/{ranch}', [RanchController::class, 'update'])->name('update');
+    Route::delete('/{ranch}', [RanchController::class, 'destroy'])->name('destroy');
+    Route::patch('/{ranch}/toggle-status', [RanchController::class, 'toggleStatus'])->name('toggle-status');
+    Route::patch('/{ranch}/toggle-featured', [RanchController::class, 'toggleFeatured'])->name('toggle-featured');
 });
 
 
@@ -95,15 +96,36 @@ Route::prefix('ranches')->name('admin.ranches.')->group(function () {
 | Event  Manage
 |--------------------------------------------------------------------------
 */
-// Events
 Route::prefix('events')->name('admin.events.')->group(function () {
-    Route::get('/',             [EventController::class, 'index'])->name('index');
-    Route::get('/datatable',    [EventController::class, 'datatable'])->name('datatable');
-    Route::get('/create',       [EventController::class, 'create'])->name('create');
-    Route::post('/',            [EventController::class, 'store'])->name('store');
-    Route::get('/{event}',      [EventController::class, 'show'])->name('show');
-    Route::get('/{event}/edit', [EventController::class, 'edit'])->name('edit');
-    Route::put('/{event}',     [EventController::class, 'update'])->name('update');
-    Route::delete('/{event}',   [EventController::class, 'destroy'])->name('destroy');
-    Route::patch('/{event}/toggle-status', [EventController::class, 'toggleStatus'])->name('toggle-status');
+    Route::get('/', [EventController::class, 'index'])->name('index');
+    Route::get('/datatable',[EventController::class, 'datatable'])->name('datatable');
+    Route::get('/create',[EventController::class, 'create'])->name('create');
+    Route::post('/',[EventController::class, 'store'])->name('store');
+    Route::get('/{event}',[EventController::class, 'show'])->name('show');
+    Route::get('/{event}/edit',[EventController::class, 'edit'])->name('edit');
+    Route::put('/{event}',[EventController::class, 'update'])->name('update');
+    Route::delete('/{event}',[EventController::class, 'destroy'])->name('destroy');
+    Route::patch('/{event}/toggle-status',[EventController::class, 'toggleStatus'])->name('toggle-status');
+});
+
+Route::prefix('advertisements')->name('admin.advertisements.')->group(function () {
+
+    // Listing page (blade)
+    Route::get('/', [AdvertisementController::class, 'index'])->name('index');
+
+    // Yajra DataTable JSON
+    Route::get('/datatable',[AdvertisementController::class, 'datatable'])->name('datatable');
+
+    // Create / Store
+    Route::get('/create',[AdvertisementController::class, 'create'])->name('create');
+    Route::post('/', [AdvertisementController::class, 'store'])->name('store');
+
+    // Show / Edit / Update / Delete
+    Route::get('/{advertisement}', [AdvertisementController::class, 'show'])->name('show');
+    Route::get('/{advertisement}/edit', [AdvertisementController::class, 'edit'])->name('edit');
+    Route::post('/{advertisement}',[AdvertisementController::class, 'update'])->name('update');
+    Route::delete('/{advertisement}',[AdvertisementController::class, 'destroy'])->name('destroy');
+
+    // Toggle status
+    Route::patch('/{advertisement}/toggle-status', [AdvertisementController::class, 'toggleStatus'])->name('toggle-status');
 });
