@@ -115,7 +115,7 @@
 
                 {{-- Event --}}
                 <li class="nav-item">
-                    <a class="nav-link menu-link {{ request()->routeIs('admin.events.index') ? 'active' : '' }}"
+                    <a class="nav-link menu-link {{ request()->routeIs('admin.advertisements.index') ? 'active' : '' }}"
                         href="{{ route('admin.advertisements.index') }}">
                         <i class="ri-customer-service-line"></i>
                         <span>Ads Management</span>

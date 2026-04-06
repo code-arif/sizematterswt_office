@@ -37,7 +37,7 @@
                 </button>
 
                 {{-- Search form --}}
-                <form class="app-search d-none d-md-block">
+                {{-- <form class="app-search d-none d-md-block">
                     <div class="position-relative">
                         <input type="text" class="form-control" placeholder="Search..." autocomplete="off"
                             id="search-options" value="">
@@ -58,13 +58,13 @@
                             </div>
                         </div>
                     </div>
-                </form>
+                </form> --}}
             </div>
 
             <div class="d-flex align-items-center">
 
                 {{-- Mobile search --}}
-                <div class="dropdown d-md-none topbar-head-dropdown header-item">
+                {{-- <div class="dropdown d-md-none topbar-head-dropdown header-item">
                     <button type="button"
                         class="btn btn-icon btn-topbar material-shadow-none btn-ghost-secondary rounded-circle"
                         id="page-header-search-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
@@ -85,7 +85,7 @@
                             </div>
                         </form>
                     </div>
-                </div>
+                </div> --}}
 
                 {{-- Fullscreen --}}
                 <div class="ms-1 header-item d-none d-sm-flex">
@@ -104,74 +104,7 @@
                     </button>
                 </div>
 
-                {{-- Notifications --}}
-                <div class="dropdown topbar-head-dropdown ms-1 header-item" id="notificationDropdown">
-                    <button type="button"
-                        class="btn btn-icon btn-topbar material-shadow-none btn-ghost-secondary rounded-circle"
-                        id="page-header-notifications-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside"
-                        aria-haspopup="true" aria-expanded="false">
-                        <i class='bx bx-bell fs-22'></i>
-                        <span
-                            class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger">
-                            3<span class="visually-hidden">unread messages</span>
-                        </span>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
-                        aria-labelledby="page-header-notifications-dropdown">
-                        <div class="dropdown-head bg-primary bg-pattern rounded-top">
-                            <div class="p-3">
-                                <div class="row align-items-center">
-                                    <div class="col">
-                                        <h6 class="m-0 fs-16 fw-semibold text-white">Notifications</h6>
-                                    </div>
-                                    <div class="col-auto dropdown-tabs">
-                                        <span class="badge bg-light text-body fs-13">4 New</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="px-2 pt-2">
-                                <ul class="nav nav-tabs dropdown-tabs nav-tabs-custom" data-dropdown-tabs="true"
-                                    id="notificationItemsTab" role="tablist">
-                                    <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link active" data-bs-toggle="tab" href="#all-noti-tab"
-                                            role="tab">All (4)</a>
-                                    </li>
-                                    <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#messages-tab"
-                                            role="tab">Messages</a>
-                                    </li>
-                                    <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#alerts-tab"
-                                            role="tab">Alerts</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
 
-                        <div class="tab-content position-relative" id="notificationItemsTabContent">
-                            <div class="tab-pane fade show active py-2 ps-2" id="all-noti-tab" role="tabpanel">
-                                <div data-simplebar style="max-height: 300px;" class="pe-2">
-                                    {{-- Notification items — populate dynamically --}}
-                                    <div class="my-3 text-center view-all">
-                                        <button type="button" class="btn btn-soft-success waves-effect waves-light">
-                                            View All Notifications <i class="ri-arrow-right-line align-middle"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade py-2 ps-2" id="messages-tab" role="tabpanel">
-                                <div data-simplebar style="max-height: 300px;" class="pe-2">
-                                    <div class="my-3 text-center view-all">
-                                        <button type="button" class="btn btn-soft-success waves-effect waves-light">
-                                            View All Messages <i class="ri-arrow-right-line align-middle"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade p-4" id="alerts-tab" role="tabpanel"></div>
-                        </div>
-                    </div>
-                </div>
 
                 {{-- User profile --}}
                 <div class="dropdown ms-sm-3 header-item topbar-user">

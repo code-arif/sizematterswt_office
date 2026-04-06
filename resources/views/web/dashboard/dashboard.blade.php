@@ -20,7 +20,7 @@
                                     </div>
                                     <div class="mt-3 mt-lg-0">
                                         <div class="row g-3 mb-0 align-items-center">
-                                            <div class="col-sm-auto">
+                                            {{-- <div class="col-sm-auto">
                                                 <div class="input-group">
                                                     <input type="text"
                                                         class="form-control border-0 minimal-border dash-filter-picker shadow"
@@ -31,19 +31,19 @@
                                                         <i class="ri-calendar-2-line"></i>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                             <div class="col-auto">
                                                 <a href="{{ route('admin.farms.create') }}"
                                                     class="btn btn-soft-success material-shadow-none">
                                                     <i class="ri-add-circle-line align-middle me-1"></i> Add Farm
                                                 </a>
                                             </div>
-                                            <div class="col-auto">
+                                            {{-- <div class="col-auto">
                                                 <button type="button"
                                                     class="btn btn-soft-info btn-icon waves-effect material-shadow-none waves-light layout-rightside-btn">
                                                     <i class="ri-pulse-line"></i>
                                                 </button>
-                                            </div>
+                                            </div> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -272,10 +272,10 @@
                                     <div class="card-header align-items-center d-flex">
                                         <h4 class="card-title mb-0 flex-grow-1">Listings by State</h4>
                                         <div class="flex-shrink-0">
-                                            <button type="button"
+                                            {{-- <button type="button"
                                                 class="btn btn-soft-primary material-shadow-none btn-sm">
                                                 Export Report
-                                            </button>
+                                            </button> --}}
                                         </div>
                                     </div>
                                     <div class="card-body">
@@ -532,9 +532,9 @@
                                     <div class="card-header align-items-center d-flex">
                                         <h4 class="card-title mb-0 flex-grow-1">Recent Registrations</h4>
                                         <div class="flex-shrink-0">
-                                            <button type="button" class="btn btn-soft-info btn-sm material-shadow-none">
+                                            {{-- <button type="button" class="btn btn-soft-info btn-sm material-shadow-none">
                                                 <i class="ri-file-list-3-line align-middle"></i> Export
-                                            </button>
+                                            </button> --}}
                                         </div>
                                     </div>
                                     <div class="card-body">
