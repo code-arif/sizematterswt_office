@@ -7,7 +7,7 @@
     <title>@yield('title') | {{ config('app.name') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Premium Multipurpose Admin & Dashboard Template">
-    <meta name="author" content="Themesbrand">
+    <meta name="author" content="Codearif">
 
     {{-- CSRF token — consumed by Axios globally --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -56,7 +56,7 @@
     @include('partials.loader')
 
     {{-- Theme settings --}}
-    @include('partials.setting')
+    {{-- @include('partials.setting') --}}
     @include('partials.themes')
 
     {{-- Core scripts (Bootstrap, Axios, NProgress, Toastify, etc.) --}}

@@ -13,8 +13,7 @@
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
                                 <li class="breadcrumb-item"><a href="{{ route('show.admin.dashboard') }}">Dashboard</a></li>
-                                <li class="breadcrumb-item"><a
-                                        href="{{ route('admin.advertisements.index') }}">Advertisements</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('admin.advertisements.index') }}">Advertisements</a></li>
                                 <li class="breadcrumb-item active">Create</li>
                             </ol>
                         </div>
@@ -22,12 +21,12 @@
                 </div>
             </div>
 
-            <form id="adForm" enctype="multipart/form-data">
+            <form id="adForm" novalidate>
                 @csrf
-                <div class="row">
+                <div class="row g-4">
 
-                    {{-- Left Column --}}
-                    <div class="col-xl-8">
+                    {{-- ── Left Column ───────────────────────────────────────── --}}
+                    <div class="col-lg-8">
 
                         {{-- Basic Info --}}
                         <div class="card">
@@ -35,21 +34,30 @@
                                 <h5 class="card-title mb-0">Ad Information</h5>
                             </div>
                             <div class="card-body">
-                                <div class="mb-3">
-                                    <label class="form-label">Title <span class="text-danger">*</span></label>
-                                    <input type="text" name="title" class="form-control"
-                                        placeholder="e.g. Visit Green Valley Farm" maxlength="150">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Subtitle</label>
-                                    <input type="text" name="subtitle" class="form-control"
-                                        placeholder="Short description or tagline" maxlength="255">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">CTA Button Label</label>
-                                    <input type="text" name="cta_label" class="form-control" value="View Details"
-                                        maxlength="50">
-                                    <div class="form-text">Text on the button shown in the ad banner.</div>
+                                <div class="row g-3">
+
+                                    <div class="col-12">
+                                        <label class="form-label">Title <span class="text-danger">*</span></label>
+                                        <input type="text" name="title" id="title" class="form-control"
+                                            placeholder="e.g. Visit Green Valley Farm" maxlength="150">
+                                        <div class="text-danger small mt-1" id="error-title"></div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label class="form-label">Subtitle</label>
+                                        <input type="text" name="subtitle" id="subtitle" class="form-control"
+                                            placeholder="Short description or tagline" maxlength="255">
+                                        <div class="text-danger small mt-1" id="error-subtitle"></div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label class="form-label">CTA Button Label</label>
+                                        <input type="text" name="cta_label" id="cta_label" class="form-control"
+                                            value="View Details" maxlength="50">
+                                        <div class="form-text">Text shown on the button inside the ad banner.</div>
+                                        <div class="text-danger small mt-1" id="error-cta_label"></div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -60,16 +68,19 @@
                                 <h5 class="card-title mb-0">Banner Image <span class="text-danger">*</span></h5>
                             </div>
                             <div class="card-body">
-                                <div class="mb-3">
-                                    <input type="file" name="image" id="imageInput" class="form-control" accept="image/*">
-                                    <div class="form-text">JPG, PNG, WEBP — max 2 MB. Recommended: 600×200 px (3:1 ratio)
-                                    </div>
+
+                                {{-- Preview --}}
+                                <div class="text-center mb-3">
+                                    <img id="imagePreview"
+                                        src="{{ asset('admin/default/placeholder.png') }}"
+                                        class="img-fluid rounded border"
+                                        style="max-height:160px;object-fit:cover;width:100%;"
+                                        alt="Banner Preview">
                                 </div>
-                                <div id="imagePreviewWrap" class="d-none mt-3">
-                                    <p class="text-muted mb-1 fs-13">Preview:</p>
-                                    <img id="imagePreview" src="" class="rounded border"
-                                        style="max-width:100%;height:160px;object-fit:cover;" />
-                                </div>
+
+                                <input type="file" name="image" id="imageInput" class="form-control" accept="image/*">
+                                <div class="form-text">JPG, PNG, WEBP — max 2 MB. Recommended: 600×200 px (3:1 ratio)</div>
+                                <div class="text-danger small mt-1" id="error-image"></div>
                             </div>
                         </div>
 
@@ -80,44 +91,58 @@
                                 <small class="text-muted">Click on the map to set where this ad will appear</small>
                             </div>
                             <div class="card-body">
-                                {{-- Search box --}}
+
+                                {{-- Search --}}
                                 <div class="mb-3">
+                                    <label class="form-label">Search on Map</label>
                                     <div class="input-group">
+                                        <span class="input-group-text bg-light">
+                                            <i class="ri-map-pin-line text-muted"></i>
+                                        </span>
                                         <input type="text" id="locationSearch" class="form-control"
                                             placeholder="Search address or place...">
-                                        <button class="btn btn-outline-primary" type="button" id="searchBtn">
-                                            <i class="ri-search-line"></i>
-                                        </button>
                                     </div>
+                                    <small class="text-muted">Search for an address OR click directly on the map to pin the location.</small>
                                 </div>
+
                                 {{-- Map --}}
-                                <div id="triggerMap" style="height:380px;border-radius:8px;border:1px solid #dee2e6;"></div>
-                                {{-- Hidden lat/lng --}}
-                                <input type="hidden" name="trigger_latitude" id="triggerLat">
+                                <div id="triggerMap" style="height:380px;border-radius:8px;border:1px solid #dee2e6;cursor:crosshair;"></div>
+
+                                {{-- Hidden inputs --}}
+                                <input type="hidden" name="trigger_latitude"  id="triggerLat">
                                 <input type="hidden" name="trigger_longitude" id="triggerLng">
+
                                 {{-- Coords display --}}
                                 <div id="coordsDisplay" class="mt-2 text-muted fs-13 d-none">
                                     <i class="ri-map-pin-2-fill text-danger me-1"></i>
                                     <span id="coordsText"></span>
                                 </div>
 
-                                <div class="mb-3 mt-3">
+                                <div class="text-danger small mt-1" id="error-trigger_latitude"></div>
+
+                                {{-- Radius Slider --}}
+                                <div class="mt-3">
                                     <label class="form-label">Trigger Radius</label>
                                     <div class="d-flex align-items-center gap-3">
                                         <input type="range" id="radiusSlider" name="radius_meters"
-                                            class="form-range flex-grow-1" min="100" max="10000" step="100" value="1000">
-                                        <span id="radiusLabel" class="badge bg-primary-subtle text-primary fs-13 fw-medium"
+                                            class="form-range flex-grow-1"
+                                            min="100" max="10000" step="100" value="1000">
+                                        <span id="radiusLabel"
+                                            class="badge bg-primary-subtle text-primary fs-13 fw-medium"
                                             style="min-width:70px;">1.0 km</span>
                                     </div>
                                     <div class="form-text">How far from the trigger point users will see this ad.</div>
+                                    <div class="text-danger small mt-1" id="error-radius_meters"></div>
                                 </div>
+
                             </div>
                         </div>
 
                     </div>
+                    {{-- /left col --}}
 
-                    {{-- Right Column --}}
-                    <div class="col-xl-4">
+                    {{-- ── Right Column ──────────────────────────────────────── --}}
+                    <div class="col-lg-4">
 
                         {{-- Link to Entity --}}
                         <div class="card">
@@ -125,6 +150,7 @@
                                 <h5 class="card-title mb-0">Link to Farm / Ranch / Event</h5>
                             </div>
                             <div class="card-body">
+
                                 <div class="mb-3">
                                     <label class="form-label">Linked Type</label>
                                     <select name="linked_type" id="linkedType" class="form-select">
@@ -133,22 +159,22 @@
                                         <option value="ranch">Ranch</option>
                                         <option value="event">Event</option>
                                     </select>
+                                    <div class="text-danger small mt-1" id="error-linked_type"></div>
                                 </div>
-                                <div class="mb-3" id="linkedIdWrap" style="display:none;">
+
+                                <div class="mb-3 d-none" id="linkedIdWrap">
                                     <label class="form-label">Select <span id="linkedTypeLabel">Item</span></label>
                                     <select name="linked_id" id="linkedId" class="form-select">
                                         <option value="">— Select —</option>
                                     </select>
+                                    <div class="text-danger small mt-1" id="error-linked_id"></div>
                                 </div>
 
-                                {{-- Auto-fill trigger from entity --}}
-                                <div id="autoFillHint" class="alert alert-info d-none fs-13 p-2">
-                                    <i class="ri-information-line me-1"></i>
-                                    Select an entity to auto-fill the trigger location from its coordinates.
-                                </div>
-                                <button type="button" id="autoFillBtn" class="btn btn-soft-info btn-sm d-none w-100">
+                                <button type="button" id="autoFillBtn"
+                                    class="btn btn-soft-info btn-sm d-none w-100 mt-1">
                                     <i class="ri-crosshairs-2-line me-1"></i> Use Entity Location as Trigger
                                 </button>
+
                             </div>
                         </div>
 
@@ -158,16 +184,29 @@
                                 <h5 class="card-title mb-0">Schedule</h5>
                             </div>
                             <div class="card-body">
+
                                 <div class="mb-3">
                                     <label class="form-label">Start Date</label>
-                                    <input type="text" name="starts_at" class="form-control" data-provider="flatpickr"
-                                        data-date-format="Y-m-d" placeholder="Always on (leave blank)">
+                                    <input type="text" name="starts_at" id="starts_at"
+                                        class="form-control"
+                                        data-provider="flatpickr"
+                                        data-date-format="Y-m-d"
+                                        placeholder="YYYY-MM-DD (leave blank = always on)">
+                                    <div class="form-text">Format: YYYY-MM-DD</div>
+                                    <div class="text-danger small mt-1" id="error-starts_at"></div>
                                 </div>
-                                <div class="mb-3">
+
+                                <div class="mb-1">
                                     <label class="form-label">End Date</label>
-                                    <input type="text" name="ends_at" class="form-control" data-provider="flatpickr"
-                                        data-date-format="Y-m-d" placeholder="No expiry (leave blank)">
+                                    <input type="text" name="ends_at" id="ends_at"
+                                        class="form-control"
+                                        data-provider="flatpickr"
+                                        data-date-format="Y-m-d"
+                                        placeholder="YYYY-MM-DD (leave blank = no expiry)">
+                                    <div class="form-text">Format: YYYY-MM-DD</div>
+                                    <div class="text-danger small mt-1" id="error-ends_at"></div>
                                 </div>
+
                             </div>
                         </div>
 
@@ -177,209 +216,285 @@
                                 <h5 class="card-title mb-0">Status</h5>
                             </div>
                             <div class="card-body">
-                                <select name="status" class="form-select">
+                                <select name="status" id="ad_status" class="form-select">
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
                                 </select>
+                                <div class="text-danger small mt-1" id="error-ad_status"></div>
                             </div>
                         </div>
 
                         {{-- Submit --}}
                         <div class="card">
-                            <div class="card-body d-grid gap-2">
-                                <button type="submit" class="btn btn-success" id="submitBtn">
-                                    <i class="ri-save-line me-1"></i> Create Advertisement
-                                </button>
-                                <a href="{{ route('admin.advertisements.index') }}" class="btn btn-light">
-                                    Cancel
-                                </a>
+                            <div class="card-body">
+                                <div class="hstack gap-2">
+                                    <button type="submit" class="btn btn-success w-100" id="submitBtn">
+                                        <span id="submitBtnText">
+                                            <i class="ri-save-line me-1"></i> Create Advertisement
+                                        </span>
+                                        <span id="submitBtnSpinner" class="d-none">
+                                            <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                                            Saving…
+                                        </span>
+                                    </button>
+                                    <a href="{{ route('admin.advertisements.index') }}" class="btn btn-light">Cancel</a>
+                                </div>
                             </div>
                         </div>
 
                     </div>
+                    {{-- /right col --}}
+
                 </div>
             </form>
         </div>
     </div>
 @endsection
 
+@push('styles')
+<style>
+    #triggerMap { cursor: crosshair; }
+    .pac-container { z-index: 9999 !important; }
+</style>
+@endpush
+
 @push('scripts')
-    {{-- Google Maps --}}
+{{-- Google Maps --}}
+<script>
+    window.__GOOGLE_MAPS_KEY = '{{ env('GOOGLE_MAPS_API_KEY') }}';
+</script>
+<script>
+(function () {
+    const s = document.createElement('script');
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${window.__GOOGLE_MAPS_KEY}&libraries=places&callback=initAdMap`;
+    s.async = true;
+    s.defer = true;
+    document.head.appendChild(s);
+})();
 
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.key') }}&libraries=places&callback=initMap"
-        async defer>
-    </script>
+var adMap, adMarker, adCircle;
 
-    {{-- Entity data for JS --}}
-    <script>
-        var FARMS = @json($farms);
-        var RANCHES = @json($ranches);
-        var EVENTS = @json($events);
-        var ENTITY_MAP = { farm: FARMS, ranch: RANCHES, event: EVENTS };
-    </script>
+window.initAdMap = function () {
+    adMap = new google.maps.Map(document.getElementById('triggerMap'), {
+        center: { lat: 39.5, lng: -98.35 },
+        zoom: 4,
+    });
 
+    // Click to place marker
+    adMap.addListener('click', function (e) {
+        placeAdMarker(e.latLng.lat(), e.latLng.lng());
+    });
 
-    <script>
-        // ── Google Maps init ──────────────────────────────────────────────────────────
-        var map, marker, circle;
-
-        function initMap() {
-            map = new google.maps.Map(document.getElementById('triggerMap'), {
-                center: { lat: 39.5, lng: -98.35 }, // USA center default
-                zoom: 4,
-            });
-
-            map.addListener('click', function (e) {
-                placeMarker(e.latLng.lat(), e.latLng.lng());
-            });
-
-            // Places autocomplete on search
-            var input = document.getElementById('locationSearch');
-            var autocomplete = new google.maps.places.Autocomplete(input);
-            autocomplete.addListener('place_changed', function () {
-                var place = autocomplete.getPlace();
-                if (place.geometry) {
-                    map.setCenter(place.geometry.location);
-                    map.setZoom(13);
-                    placeMarker(place.geometry.location.lat(), place.geometry.location.lng());
-                }
-            });
+    // Autocomplete search
+    var autocomplete = new google.maps.places.Autocomplete(
+        document.getElementById('locationSearch'),
+        { types: ['geocode', 'establishment'] }
+    );
+    autocomplete.bindTo('bounds', adMap);
+    autocomplete.addListener('place_changed', function () {
+        var place = autocomplete.getPlace();
+        if (place.geometry) {
+            adMap.setCenter(place.geometry.location);
+            adMap.setZoom(13);
+            placeAdMarker(place.geometry.location.lat(), place.geometry.location.lng());
         }
+    });
+};
 
-        function placeMarker(lat, lng) {
-            document.getElementById('triggerLat').value = lat;
-            document.getElementById('triggerLng').value = lng;
+function placeAdMarker(lat, lng) {
+    document.getElementById('triggerLat').value = lat;
+    document.getElementById('triggerLng').value = lng;
 
-            var pos = { lat: lat, lng: lng };
+    // Clear error if set
+    document.getElementById('error-trigger_latitude').textContent = '';
 
-            if (marker) {
-                marker.setPosition(pos);
-            } else {
-                marker = new google.maps.Marker({ position: pos, map: map, draggable: true });
-                marker.addListener('dragend', function (e) {
-                    placeMarker(e.latLng.lat(), e.latLng.lng());
-                });
-            }
+    var pos = { lat: lat, lng: lng };
 
-            updateCircle(pos);
-
-            document.getElementById('coordsDisplay').classList.remove('d-none');
-            document.getElementById('coordsText').textContent =
-                lat.toFixed(6) + ', ' + lng.toFixed(6);
-        }
-
-        function updateCircle(center) {
-            var radius = parseInt(document.getElementById('radiusSlider').value);
-            if (circle) {
-                circle.setCenter(center);
-                circle.setRadius(radius);
-            } else {
-                circle = new google.maps.Circle({
-                    map: map,
-                    center: center,
-                    radius: radius,
-                    fillColor: '#405189',
-                    fillOpacity: 0.15,
-                    strokeColor: '#405189',
-                    strokeOpacity: 0.6,
-                    strokeWeight: 1,
-                });
-            }
-        }
-
-        // ── Radius slider ─────────────────────────────────────────────────────────────
-        $(function () {
-            $('#radiusSlider').on('input', function () {
-                var v = parseInt(this.value);
-                var label = v >= 1000 ? (v / 1000).toFixed(1) + ' km' : v + ' m';
-                $('#radiusLabel').text(label);
-                if (circle) circle.setRadius(v);
-            });
-
-            // ── Image preview ─────────────────────────────────────────────────────
-            $('#imageInput').on('change', function () {
-                var file = this.files[0];
-                if (!file) return;
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#imagePreview').attr('src', e.target.result);
-                    $('#imagePreviewWrap').removeClass('d-none');
-                };
-                reader.readAsDataURL(file);
-            });
-
-            // ── Linked type selector ──────────────────────────────────────────────
-            $('#linkedType').on('change', function () {
-                var type = this.value;
-                if (!type) {
-                    $('#linkedIdWrap').hide();
-                    $('#autoFillHint').addClass('d-none');
-                    $('#autoFillBtn').addClass('d-none');
-                    return;
-                }
-
-                $('#linkedTypeLabel').text(type.charAt(0).toUpperCase() + type.slice(1));
-                var entities = ENTITY_MAP[type] || [];
-                var opts = '<option value="">— Select —</option>';
-                entities.forEach(function (e) {
-                    opts += '<option value="' + e.id + '" data-lat="' + e.lat + '" data-lng="' + e.lng + '">' + e.name + '</option>';
-                });
-                $('#linkedId').html(opts);
-                $('#linkedIdWrap').show();
-                $('#autoFillHint').removeClass('d-none');
-            });
-
-            $('#linkedId').on('change', function () {
-                var opt = $(this).find(':selected');
-                var lat = opt.data('lat'), lng = opt.data('lng');
-                if (lat && lng) $('#autoFillBtn').removeClass('d-none');
-                else $('#autoFillBtn').addClass('d-none');
-            });
-
-            $('#autoFillBtn').on('click', function () {
-                var opt = $('#linkedId').find(':selected');
-                var lat = parseFloat(opt.data('lat'));
-                var lng = parseFloat(opt.data('lng'));
-                if (!lat || !lng) return;
-                map.setCenter({ lat: lat, lng: lng });
-                map.setZoom(13);
-                placeMarker(lat, lng);
-            });
-
-            // ── Form submit ───────────────────────────────────────────────────────
-            $('#adForm').on('submit', function (e) {
-                e.preventDefault();
-
-                if (!$('#triggerLat').val()) {
-                    toastr.error('Please click the map to set a trigger location.');
-                    return;
-                }
-
-                var btn = $('#submitBtn').prop('disabled', true).text('Saving...');
-                var data = new FormData(this);
-
-                $.ajax({
-                    url: '{{ route("admin.advertisements.store") }}',
-                    method: 'POST',
-                    data: data,
-                    processData: false,
-                    contentType: false,
-                    success: function (res) {
-                        toastr.success(res.message);
-                        setTimeout(function () {
-                            window.location.href = res.data.redirect;
-                        }, 800);
-                    },
-                    error: function (xhr) {
-                        btn.prop('disabled', false).text('Create Advertisement');
-                        var errors = xhr.responseJSON?.errors ?? {};
-                        Object.values(errors).flat().forEach(function (msg) {
-                            toastr.error(msg);
-                        });
-                    }
-                });
-            });
+    if (adMarker) {
+        adMarker.setPosition(pos);
+    } else {
+        adMarker = new google.maps.Marker({
+            position : pos,
+            map      : adMap,
+            draggable: true,
+            animation: google.maps.Animation.DROP,
         });
-    </script>
+        adMarker.addListener('dragend', function (e) {
+            placeAdMarker(e.latLng.lat(), e.latLng.lng());
+        });
+    }
+
+    var radius = parseInt(document.getElementById('radiusSlider').value);
+    if (adCircle) {
+        adCircle.setCenter(pos);
+        adCircle.setRadius(radius);
+    } else {
+        adCircle = new google.maps.Circle({
+            map          : adMap,
+            center       : pos,
+            radius       : radius,
+            fillColor    : '#405189',
+            fillOpacity  : 0.15,
+            strokeColor  : '#405189',
+            strokeOpacity: 0.6,
+            strokeWeight : 1,
+        });
+    }
+
+    document.getElementById('coordsDisplay').classList.remove('d-none');
+    document.getElementById('coordsText').textContent = lat.toFixed(6) + ', ' + lng.toFixed(6);
+}
+</script>
+
+{{-- Entity data --}}
+<script>
+var ENTITY_MAP = {
+    farm  : @json($farms),
+    ranch : @json($ranches),
+    event : @json($events),
+};
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    // ── Radius slider ──────────────────────────────────────────────────────
+    document.getElementById('radiusSlider').addEventListener('input', function () {
+        var v     = parseInt(this.value);
+        var label = v >= 1000 ? (v / 1000).toFixed(1) + ' km' : v + ' m';
+        document.getElementById('radiusLabel').textContent = label;
+        if (adCircle) adCircle.setRadius(v);
+    });
+
+    // ── Banner image preview ───────────────────────────────────────────────
+    document.getElementById('imageInput').addEventListener('change', function () {
+        var file = this.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('imagePreview').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // ── Linked type selector ───────────────────────────────────────────────
+    document.getElementById('linkedType').addEventListener('change', function () {
+        var type      = this.value;
+        var idWrap    = document.getElementById('linkedIdWrap');
+        var autoBtn   = document.getElementById('autoFillBtn');
+        var typeLabel = document.getElementById('linkedTypeLabel');
+        var select    = document.getElementById('linkedId');
+
+        if (!type) {
+            idWrap.classList.add('d-none');
+            autoBtn.classList.add('d-none');
+            return;
+        }
+
+        typeLabel.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+        var entities = ENTITY_MAP[type] || [];
+        var opts = '<option value="">— Select —</option>';
+        entities.forEach(function (item) {
+            opts += '<option value="' + item.id + '" data-lat="' + item.lat + '" data-lng="' + item.lng + '">'
+                + item.name + '</option>';
+        });
+        select.innerHTML = opts;
+        idWrap.classList.remove('d-none');
+        autoBtn.classList.add('d-none');
+    });
+
+    document.getElementById('linkedId').addEventListener('change', function () {
+        var opt = this.options[this.selectedIndex];
+        var lat = opt.dataset.lat;
+        var lng = opt.dataset.lng;
+        var btn = document.getElementById('autoFillBtn');
+        if (lat && lng) btn.classList.remove('d-none');
+        else            btn.classList.add('d-none');
+    });
+
+    document.getElementById('autoFillBtn').addEventListener('click', function () {
+        var opt = document.getElementById('linkedId').options[document.getElementById('linkedId').selectedIndex];
+        var lat = parseFloat(opt.dataset.lat);
+        var lng = parseFloat(opt.dataset.lng);
+        if (!lat || !lng) return;
+        adMap.setCenter({ lat: lat, lng: lng });
+        adMap.setZoom(13);
+        placeAdMarker(lat, lng);
+    });
+
+    // ── Helpers ────────────────────────────────────────────────────────────
+    function clearErrors() {
+        document.querySelectorAll('[id^="error-"]').forEach(function (el) {
+            el.textContent = '';
+        });
+        document.querySelectorAll('.is-invalid').forEach(function (el) {
+            el.classList.remove('is-invalid');
+        });
+    }
+
+    function showFieldErrors(errors) {
+        Object.entries(errors).forEach(function (entry) {
+            var field    = entry[0];
+            var messages = entry[1];
+            var errEl    = document.getElementById('error-' + field);
+            var inputEl  = document.getElementById(field);
+            if (errEl)   errEl.textContent = messages[0];
+            if (inputEl) inputEl.classList.add('is-invalid');
+        });
+
+        // Scroll to first error
+        var firstErr = document.querySelector('.is-invalid');
+        if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function setLoading(state) {
+        document.getElementById('submitBtn').disabled = state;
+        document.getElementById('submitBtnText').classList.toggle('d-none', state);
+        document.getElementById('submitBtnSpinner').classList.toggle('d-none', !state);
+    }
+
+    // ── Form submit ────────────────────────────────────────────────────────
+    document.getElementById('adForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        clearErrors();
+
+        // Manual trigger location check
+        if (!document.getElementById('triggerLat').value) {
+            document.getElementById('error-trigger_latitude').textContent =
+                'Please click the map to set a trigger location.';
+            document.getElementById('triggerMap').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        setLoading(true);
+
+        var fd = new FormData(this);
+
+        axios.post('{{ route('admin.advertisements.store') }}', fd, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
+        .then(function (res) {
+            // ── FIX 1: redirect after success ──────────────────────────
+            Toast.success(res.data.message);
+            setTimeout(function () {
+                window.location.href = res.data.data.redirect;
+            }, 800);
+        })
+        .catch(function (err) {
+            var data = err.response?.data;
+            if (data?.errors) {
+                // ── FIX 3: show field-level errors ──────────────────────
+                showFieldErrors(data.errors);
+                if (data.message) Toast.error(data.message);
+            } else {
+                Toast.fromResponse(data);
+            }
+        })
+        .finally(function () {
+            setLoading(false);
+        });
+    });
+
+});
+</script>
 @endpush

@@ -37,8 +37,8 @@ class AdvertisementController extends Controller
     public function datatable(Request $request): JsonResponse
     {
         $ads = Advertisement::with('user', 'advertiseable')
-            ->select('advertisements.*');
-            // dd($ads->get());
+            ->select('advertisements.*')
+            ->orderByDesc('created_at');
 
         return DataTables::of($ads)
             ->addIndexColumn()
@@ -173,18 +173,18 @@ class AdvertisementController extends Controller
         $ad = Advertisement::create([
             'user_id' => auth('admin')->id(),
             'advertiser' => 'admin',
-            'advertiseable_type'  => $morphType,
-            'advertiseable_id'    => $morphId,
-            'title'               => $request->title,
-            'subtitle'            => $request->subtitle,
-            'image'               => $imagePath,
-            'cta_label'           => $request->cta_label ?? 'View Details',
-            'trigger_latitude'    => $request->trigger_latitude,
-            'trigger_longitude'   => $request->trigger_longitude,
-            'radius_meters'       => $request->radius_meters,
-            'status'              => $request->status ?? 'active',
-            'starts_at'           => $request->starts_at,
-            'ends_at'             => $request->ends_at,
+            'advertiseable_type' => $morphType,
+            'advertiseable_id' => $morphId,
+            'title' => $request->title,
+            'subtitle' => $request->subtitle,
+            'image' => $imagePath,
+            'cta_label' => $request->cta_label ?? 'View Details',
+            'trigger_latitude' => $request->trigger_latitude,
+            'trigger_longitude' => $request->trigger_longitude,
+            'radius_meters' => $request->radius_meters,
+            'status' => $request->status ?? 'active',
+            'starts_at' => $request->starts_at,
+            'ends_at' => $request->ends_at,
         ]);
 
         return $this->success('Advertisement created successfully.', [
@@ -200,7 +200,7 @@ class AdvertisementController extends Controller
     */
     public function show(Advertisement $advertisement): View
     {
-        $advertisement->load(['admin', 'advertiseable', 'impressions']);
+        $advertisement->load(['user', 'advertiseable', 'impressions']);
         $totalImpressions = $advertisement->impressions()->count();
         $dismissed        = $advertisement->impressions()->where('is_dismissed', true)->count();
 

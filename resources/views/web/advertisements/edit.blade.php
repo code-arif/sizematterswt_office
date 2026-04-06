@@ -23,9 +23,9 @@
             </div>
         </div>
 
-        <form id="adForm" enctype="multipart/form-data">
+        <form id="adForm" enctype="multipart/form-data" method="POST">
             @csrf
-            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" name="_method" value="POST">
 
             <div class="row">
 

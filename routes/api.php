@@ -120,7 +120,7 @@ Route::group(['prefix' => 'v1'], function ($router) {
     });
 
     // Ranche list / detail
-    Route::prefix('ranche')->name('api.events.')->group(function () {
+    Route::prefix('ranche')->name('api.ranche.')->group(function () {
         Route::get('/', [RancheController::class, 'index'])->name('index'); // DONE: ranche list
         Route::get('/{ranche}', [RancheController::class, 'show'])->name('show'); // DONE: ranche details
     });
@@ -142,17 +142,16 @@ Route::group(['prefix' => 'v1'], function ($router) {
 
         // Visited
         Route::prefix('visited')->group(function () {
-            Route::get('/', [VisitedController::class, 'index'])->name('index'); // DONE: visited place list
-            Route::post('/', [VisitedController::class, 'store'])->name('store'); // DONE: store visited place
-            Route::delete('/{visited}', [VisitedController::class, 'destroy'])->name('destroy'); // DONE: remove visited place from list
+            Route::get('/', [VisitedController::class, 'index']); // DONE: visited place list
+            Route::post('/', [VisitedController::class, 'store']); // DONE: store visited place
+            Route::delete('/{visited}', [VisitedController::class, 'destroy']); // DONE: remove visited place from list
         });
     });
 
-    // Public — no auth needed (guest users also see ads)
-    Route::post('/ads/nearby', [AdsController::class, 'nearby'])->name('api.ads.nearby');
 
-    // Authenticated — dismiss an ad
+    // Advertisements
     Route::middleware('auth:api')->group(function () {
+        Route::post('/ads/nearby', [AdsController::class, 'nearby'])->name('api.ads.nearby');
         Route::post('/ads/{advertisement}/dismiss', [AdsController::class, 'dismiss'])->name('api.ads.dismiss');
     });
 });
