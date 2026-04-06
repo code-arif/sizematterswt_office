@@ -32,22 +32,26 @@
                         </div>
 
                         <div class="card-body">
-                            <table id="adsTable" class="table table-bordered table-nowrap align-middle" style="width:100%">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Banner</th>
-                                        <th>Advartiser</th>
-                                        <th>Title</th>
-                                        <th>Linked To</th>
-                                        <th>Radius</th>
-                                        <th>Schedule</th>
-                                        <th>Impressions</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                            </table>
+                            {{-- FIX 1: wrap in table-responsive so the table can scroll horizontally
+                            instead of breaking out of the card --}}
+                            <div class="table-responsive">
+                                <table id="adsTable" class="table table-bordered table-nowrap align-middle w-100">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th width="40">#</th>
+                                            <th width="80">Banner</th>
+                                            <th width="110">Advertiser</th>
+                                            <th>Title</th>
+                                            <th width="160">Linked To</th>
+                                            <th width="80">Radius</th>
+                                            <th width="160">Schedule</th>
+                                            <th width="100" class="text-center">Impressions</th>
+                                            <th width="90">Status</th>
+                                            <th width="110">Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -85,28 +89,44 @@
                 processing: true,
                 serverSide: true,
                 ajax: '{{ route("admin.advertisements.datatable") }}',
+                // FIX 2: enable horizontal scroll inside DataTables itself
+                scrollX: true,
+                autoWidth: false,
                 columns: [
-                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, width: '50px' },
+                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, width: '40px' },
                     {
-                        data: 'image', name: 'image', orderable: false, searchable: false,
+                        data: 'image', name: 'image', orderable: false, searchable: false, width: '80px',
                         render: function (data) {
                             return '<img src="/storage/' + data + '" class="rounded" style="width:70px;height:42px;object-fit:cover;" />';
                         }
                     },
-                    { data: 'advertiser', name: 'advertiser', orderable: false },
+                    { data: 'advertiser', name: 'advertiser', orderable: false, width: '110px' },
                     {
-                        data: 'title', name: 'title',
+                        data: 'title',
+                        name: 'title',
+                        width: '220px',
+                        // FIX 3: truncate long title/subtitle so it never blows out the column
                         render: function (data, type, row) {
-                            var sub = row.subtitle ? '<small class="text-muted d-block">' + row.subtitle + '</small>' : '';
-                            return '<strong>' + data + '</strong>' + sub;
+                            var title = $('<div>').text(data).html();           // XSS-safe
+                            var sub = '';
+                            if (row.subtitle) {
+                                var truncated = row.subtitle.length > 60
+                                    ? row.subtitle.substring(0, 60) + '…'
+                                    : row.subtitle;
+                                sub = '<small class="text-muted d-block text-truncate" style="max-width:200px;" title="'
+                                    + $('<div>').text(row.subtitle).html() + '">'
+                                    + $('<div>').text(truncated).html()
+                                    + '</small>';
+                            }
+                            return '<strong>' + title + '</strong>' + sub;
                         }
                     },
-                    { data: 'linked_to', name: 'linked_to', orderable: false },
-                    { data: 'radius_label', name: 'radius_label', orderable: false, searchable: false },
-                    { data: 'schedule', name: 'schedule', orderable: false, searchable: false },
-                    { data: 'impression_count', name: 'impression_count', className: 'text-center' },
-                    { data: 'status_badge', name: 'status', orderable: false },
-                    { data: 'action', name: 'action', orderable: false, searchable: false },
+                    { data: 'linked_to', name: 'linked_to', orderable: false, width: '160px' },
+                    { data: 'radius_label', name: 'radius_label', orderable: false, searchable: false, width: '80px' },
+                    { data: 'schedule', name: 'schedule', orderable: false, searchable: false, width: '160px' },
+                    { data: 'impression_count', name: 'impression_count', className: 'text-center', width: '100px' },
+                    { data: 'status_badge', name: 'status', orderable: false, width: '90px' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false, width: '110px' },
                 ],
                 order: [[0, 'desc']],
                 language: { processing: '<span class="spinner-border spinner-border-sm"></span> Loading...' },
