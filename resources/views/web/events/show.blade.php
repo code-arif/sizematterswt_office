@@ -416,7 +416,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* ── Toggle status ──────────────────────────────────────────────────── */
     document.getElementById('toggleStatusBtn').addEventListener('click', function () {
-        axios.patch(`/admin/events/${eventId}/toggle-status`, {
+        axios.patch(`/events/${eventId}/toggle-status`, {
             _token: document.querySelector('meta[name="csrf-token"]').content
         })
         .then(res => { Toast.success(res.data.message); setTimeout(() => location.reload(), 800); })

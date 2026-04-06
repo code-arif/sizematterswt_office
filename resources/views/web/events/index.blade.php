@@ -34,25 +34,27 @@
                         </div>
 
                         <div class="card-body">
-                            <table id="eventsTable"
-                                class="table table-bordered dt-responsive nowrap table-striped align-middle"
-                                style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>SR No.</th>
-                                        <th>Title</th>
-                                        <th>Address</th>
-                                        <th>Phone</th>
-                                        <th>Start Date</th>
-                                        <th>End Date</th>
-                                        <th>Entry Fee</th>
-                                        <th>Status</th>
-                                        <th>Added By</th>
-                                        <th>Created At</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                            </table>
+                            <div class="table-responsive">
+                                <table id="eventsTable"
+                                    class="table table-bordered dt-responsive nowrap table-striped align-middle"
+                                    style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>SR No.</th>
+                                            <th>Title</th>
+                                            <th>Address</th>
+                                            <th>Phone</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>Entry Fee</th>
+                                            <th>Status</th>
+                                            <th>Added By</th>
+                                            <th>Created At</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
                         </div>
 
                     </div>
@@ -84,13 +86,13 @@
                     {
                         data: 'title',
                         render: (d, t, r) => `<div class="d-flex align-items-center gap-2">
-                            ${r.image
+                                ${r.image
                                 ? `<img src="/storage/${r.image}" class="rounded avatar-xs object-fit-cover" alt="">`
                                 : `<div class="avatar-xs bg-light rounded d-flex align-items-center justify-content-center">
-                                       <i class="ri-calendar-event-line text-muted fs-16"></i>
-                                   </div>`}
-                            <span class="fw-medium">${d}</span>
-                        </div>`
+                                           <i class="ri-calendar-event-line text-muted fs-16"></i>
+                                       </div>`}
+                                <span class="fw-medium">${d}</span>
+                            </div>`
                     },
                     {
                         data: 'address'
@@ -161,10 +163,10 @@
                 }).then(confirmed => {
                     if (!confirmed) return;
                     axios.delete(`/events/${id}`, {
-                            data: {
-                                _token: document.querySelector('meta[name="csrf-token"]').content
-                            }
-                        })
+                        data: {
+                            _token: document.querySelector('meta[name="csrf-token"]').content
+                        }
+                    })
                         .then(res => {
                             Toast.success(res.data.message);
                             table.ajax.reload(null, false);
@@ -177,8 +179,8 @@
             $('#eventsTable').on('click', '.toggle-status', function () {
                 const id = this.dataset.id;
                 axios.patch(`/admin/events/${id}/toggle-status`, {
-                        _token: document.querySelector('meta[name="csrf-token"]').content
-                    })
+                    _token: document.querySelector('meta[name="csrf-token"]').content
+                })
                     .then(res => {
                         Toast.success(res.data.message);
                         table.ajax.reload(null, false);

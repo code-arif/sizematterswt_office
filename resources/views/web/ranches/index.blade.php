@@ -34,24 +34,26 @@
                         </div>
 
                         <div class="card-body">
-                            <table id="ranchesTable"
-                                class="table table-bordered dt-responsive nowrap table-striped align-middle"
-                                style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>SR No.</th>
-                                        <th>Name</th>
-                                        <th>Address</th>
-                                        <th>Phone</th>
-                                        <th>Acreage</th>
-                                        <th>Marker</th>
-                                        <th>Status</th>
-                                        <th>Added By</th>
-                                        <th>Created At</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                            </table>
+                            <div class="table-responsive">
+                                <table id="ranchesTable"
+                                    class="table table-bordered dt-responsive nowrap table-striped align-middle"
+                                    style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>SR No.</th>
+                                            <th>Name</th>
+                                            <th>Address</th>
+                                            <th>Phone</th>
+                                            <th>Acreage</th>
+                                            <th>Marker</th>
+                                            <th>Status</th>
+                                            <th>Added By</th>
+                                            <th>Created At</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
                         </div>
 
                     </div>
@@ -64,7 +66,7 @@
 
 @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
 
             const table = $('#ranchesTable').DataTable({
                 processing: true,
@@ -74,62 +76,62 @@
                     type: 'GET'
                 },
                 columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: 'name',
-                        render: (d, t, r) => `<div class="d-flex align-items-center gap-2">
-                    ${r.thumbnail
-                        ? `<img src="/storage/${r.thumbnail}" class="rounded avatar-xs object-fit-cover" alt="">`
-                        : `<div class="avatar-xs bg-light rounded d-flex align-items-center justify-content-center">
-                                   <i class="ri-home-5-line text-muted fs-16"></i>
-                               </div>`}
-                    <span class="fw-medium">${d}</span>
-                </div>`
-                    },
-                    {
-                        data: 'address'
-                    },
-                    {
-                        data: 'phone',
-                        defaultContent: '—'
-                    },
-                    {
-                        data: 'acreage_display',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: 'marker_preview',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: 'status_badge',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: 'admin_name',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: 'created_at',
-                        render: d => new Date(d).toLocaleDateString('en-US', {
-                            day: '2-digit',
-                            month: 'short',
-                            year: 'numeric'
-                        })
-                    },
-                    {
-                        data: 'action',
-                        orderable: false,
-                        searchable: false
-                    },
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'name',
+                    render: (d, t, r) => `<div class="d-flex align-items-center gap-2">
+                        ${r.thumbnail
+                            ? `<img src="/storage/${r.thumbnail}" class="rounded avatar-xs object-fit-cover" alt="">`
+                            : `<div class="avatar-xs bg-light rounded d-flex align-items-center justify-content-center">
+                                       <i class="ri-home-5-line text-muted fs-16"></i>
+                                   </div>`}
+                        <span class="fw-medium">${d}</span>
+                    </div>`
+                },
+                {
+                    data: 'address'
+                },
+                {
+                    data: 'phone',
+                    defaultContent: '—'
+                },
+                {
+                    data: 'acreage_display',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'marker_preview',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'status_badge',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'admin_name',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'created_at',
+                    render: d => new Date(d).toLocaleDateString('en-US', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric'
+                    })
+                },
+                {
+                    data: 'action',
+                    orderable: false,
+                    searchable: false
+                },
                 ],
                 order: [
                     [7, 'desc']
@@ -141,7 +143,7 @@
             });
 
             /* ── Delete ────────────────────────────────────────────────────────────── */
-            $('#ranchesTable').on('click', '.delete-ranch', function() {
+            $('#ranchesTable').on('click', '.delete-ranch', function () {
                 const id = this.dataset.id;
                 Alert.confirm('This ranch will be permanently removed.', {
                     title: 'Delete Ranch?',
@@ -150,11 +152,11 @@
                 }).then(confirmed => {
                     if (!confirmed) return;
                     axios.delete(`/ranches/${id}`, {
-                            data: {
-                                _token: document.querySelector('meta[name="csrf-token"]')
-                                    .content
-                            }
-                        })
+                        data: {
+                            _token: document.querySelector('meta[name="csrf-token"]')
+                                .content
+                        }
+                    })
                         .then(res => {
                             Toast.success(res.data.message);
                             table.ajax.reload(null, false);
@@ -164,11 +166,11 @@
             });
 
             /* ── Toggle status ─────────────────────────────────────────────────────── */
-            $('#ranchesTable').on('click', '.toggle-status', function() {
+            $('#ranchesTable').on('click', '.toggle-status', function () {
                 const id = this.dataset.id;
                 axios.patch(`/admin/ranches/${id}/toggle-status`, {
-                        _token: document.querySelector('meta[name="csrf-token"]').content
-                    })
+                    _token: document.querySelector('meta[name="csrf-token"]').content
+                })
                     .then(res => {
                         Toast.success(res.data.message);
                         table.ajax.reload(null, false);
