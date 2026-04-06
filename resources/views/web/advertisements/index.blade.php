@@ -37,6 +37,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Banner</th>
+                                        <th>Advartiser</th>
                                         <th>Title</th>
                                         <th>Linked To</th>
                                         <th>Radius</th>
@@ -92,6 +93,7 @@
                             return '<img src="/storage/' + data + '" class="rounded" style="width:70px;height:42px;object-fit:cover;" />';
                         }
                     },
+                    { data: 'advertiser', name: 'advertiser', orderable: false },
                     {
                         data: 'title', name: 'title',
                         render: function (data, type, row) {

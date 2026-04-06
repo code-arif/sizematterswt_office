@@ -36,12 +36,13 @@ class AdvertisementController extends Controller
     */
     public function datatable(Request $request): JsonResponse
     {
-        $ads = Advertisement::with('admin', 'advertiseable')
+        $ads = Advertisement::with('user', 'advertiseable')
             ->select('advertisements.*');
+            // dd($ads->get());
 
         return DataTables::of($ads)
             ->addIndexColumn()
-            ->addColumn('admin_name', fn($row) => $row->admin?->profile?->name ?? '—')
+            ->addColumn('advertiser', fn($row) => $row->user?->profile?->name ?? '—')
             ->addColumn('linked_to', function ($row) {
                 if (! $row->advertiseable) return '<span class="text-muted">—</span>';
 
@@ -49,7 +50,7 @@ class AdvertisementController extends Controller
                 $type  = class_basename($row->advertiseable_type);
                 $color = match ($type) {
                     'Farm'  => 'success',
-                    'Ranch' => 'warning',
+                    'Ranche' => 'warning',
                     'Event' => 'danger',
                     default => 'secondary',
                 };
@@ -67,6 +68,7 @@ class AdvertisementController extends Controller
                 $to   = $row->ends_at   ? $row->ends_at->format('d M Y')   : '∞';
                 return $from . ' – ' . $to;
             })
+            ->addColumn('impression_count', fn($row) => $row->impression_count ?? 0)
             ->addColumn('status_badge', function ($row) {
                 if ($row->is_expired) {
                     return '<span class="badge bg-danger-subtle text-danger">Expired</span>';
@@ -133,7 +135,7 @@ class AdvertisementController extends Controller
             'title'             => ['required', 'string', 'max:150'],
             'subtitle'          => ['nullable', 'string', 'max:255'],
             'image'             => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            // 'cta_label'         => ['nullable', 'string', 'max:50'],
+            'cta_label'         => ['nullable', 'string', 'max:50'],
             'trigger_latitude'  => ['required', 'numeric', 'between:-90,90'],
             'trigger_longitude' => ['required', 'numeric', 'between:-180,180'],
             'radius_meters'     => ['required', 'integer', 'min:100', 'max:50000'],
@@ -176,7 +178,7 @@ class AdvertisementController extends Controller
             'title'               => $request->title,
             'subtitle'            => $request->subtitle,
             'image'               => $imagePath,
-            // 'cta_label'           => $request->cta_label ?? 'View Details',
+            'cta_label'           => $request->cta_label ?? 'View Details',
             'trigger_latitude'    => $request->trigger_latitude,
             'trigger_longitude'   => $request->trigger_longitude,
             'radius_meters'       => $request->radius_meters,
@@ -239,7 +241,7 @@ class AdvertisementController extends Controller
             'title'             => ['required', 'string', 'max:150'],
             'subtitle'          => ['nullable', 'string', 'max:255'],
             'image'             => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            // 'cta_label'         => ['nullable', 'string', 'max:50'],
+            'cta_label'         => ['nullable', 'string', 'max:50'],
             'trigger_latitude'  => ['required', 'numeric', 'between:-90,90'],
             'trigger_longitude' => ['required', 'numeric', 'between:-180,180'],
             'radius_meters'     => ['required', 'integer', 'min:100', 'max:50000'],
@@ -275,7 +277,7 @@ class AdvertisementController extends Controller
             'title'               => $request->title,
             'subtitle'            => $request->subtitle,
             'image'               => $imagePath,
-            // 'cta_label'           => $request->cta_label ?? $advertisement->cta_label,
+            'cta_label'           => $request->cta_label ?? $advertisement->cta_label,
             'trigger_latitude'    => $request->trigger_latitude,
             'trigger_longitude'   => $request->trigger_longitude,
             'radius_meters'       => $request->radius_meters,

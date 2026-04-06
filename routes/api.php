@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Ad\AdsController;
 use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\RegisterController;
@@ -145,6 +146,14 @@ Route::group(['prefix' => 'v1'], function ($router) {
             Route::post('/', [VisitedController::class, 'store'])->name('store'); // DONE: store visited place
             Route::delete('/{visited}', [VisitedController::class, 'destroy'])->name('destroy'); // DONE: remove visited place from list
         });
+    });
+
+    // Public — no auth needed (guest users also see ads)
+    Route::post('/ads/nearby', [AdsController::class, 'nearby'])->name('api.ads.nearby');
+
+    // Authenticated — dismiss an ad
+    Route::middleware('auth:api')->group(function () {
+        Route::post('/ads/{advertisement}/dismiss', [AdsController::class, 'dismiss'])->name('api.ads.dismiss');
     });
 });
 

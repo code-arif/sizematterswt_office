@@ -19,7 +19,7 @@ class Advertisement extends Model
         'title',
         'subtitle',
         'image',
-        // 'cta_label',
+        'cta_label',
         'trigger_latitude',
         'trigger_longitude',
         'radius_meters',
@@ -40,9 +40,9 @@ class Advertisement extends Model
 
     // Relationships
 
-    public function admin(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'admin_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function advertiseable(): MorphTo
@@ -75,5 +75,11 @@ class Advertisement extends Model
     public function getIsExpiredAttribute(): bool
     {
         return $this->ends_at && $this->ends_at->isPast();
+    }
+
+    public function incrementImpressionCount(): void
+    {
+        $this->impression_count++;
+        $this->save();
     }
 }
