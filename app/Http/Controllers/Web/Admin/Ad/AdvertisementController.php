@@ -132,17 +132,17 @@ class AdvertisementController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'title'             => ['required', 'string', 'max:150'],
-            'subtitle'          => ['nullable', 'string', 'max:255'],
-            'image'             => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            'cta_label'         => ['nullable', 'string', 'max:50'],
+            'title' => ['required', 'string', 'max:150'],
+            'subtitle' => ['nullable', 'string', 'max:255'],
+            'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'cta_label' => ['nullable', 'string', 'max:50'],
             'trigger_latitude'  => ['required', 'numeric', 'between:-90,90'],
             'trigger_longitude' => ['required', 'numeric', 'between:-180,180'],
-            'radius_meters'     => ['required', 'integer', 'min:100', 'max:50000'],
-            'status'            => ['nullable', 'in:active,inactive'],
-            'starts_at'         => ['nullable', 'date'],
-            'ends_at'           => ['nullable', 'date', 'after_or_equal:starts_at'],
-            'linked_type'       => ['nullable', 'in:farm,ranch,event'],
+            'radius_meters' => ['required', 'integer', 'min:100', 'max:50000'],
+            'status' => ['nullable', 'in:active,inactive'],
+            'starts_at' => ['nullable', 'date'],
+            'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
+            'linked_type' => ['nullable', 'in:farm,ranch,event'],
             'linked_id'         => ['nullable', 'integer'],
         ], [
             'title.required'            => 'Ad title is required.',
@@ -189,7 +189,7 @@ class AdvertisementController extends Controller
 
         return $this->success('Advertisement created successfully.', [
             'advertisement' => $ad,
-            'redirect'      => route('admin.advertisements.index'),
+            'redirect' => route('admin.advertisements.index'),
         ], 201);
     }
 
