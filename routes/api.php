@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\Ad\AdsController;
+use App\Http\Controllers\Api\Ads\AdvertisementController;
 use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\RegisterController;
@@ -151,8 +151,8 @@ Route::group(['prefix' => 'v1'], function ($router) {
 
     // Advertisements
     Route::middleware('auth:api')->group(function () {
-        Route::post('/ads/nearby', [AdsController::class, 'nearby'])->name('api.ads.nearby');
-        Route::post('/ads/{advertisement}/dismiss', [AdsController::class, 'dismiss'])->name('api.ads.dismiss');
+        Route::post('/ads/nearby', [AdvertisementController::class, 'nearby'])->name('api.ads.nearby');
+        Route::post('/ads/{advertisement}/dismiss', [AdvertisementController::class, 'dismiss'])->name('api.ads.dismiss');
     });
 });
 
