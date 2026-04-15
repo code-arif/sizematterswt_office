@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\Admin\Ad;
 
 use App\Helpers\FileHandle;
 use App\Http\Controllers\Controller;
+use App\Models\Advertise;
 use App\Models\Advertisement;
 use App\Models\Event;
 use App\Models\Farm;
@@ -36,8 +37,8 @@ class AdvertisementController extends Controller
     */
     public function datatable(Request $request): JsonResponse
     {
-        $ads = Advertisement::with('user', 'advertiseable')
-            ->select('advertisements.*')
+        $ads = Advertise::with('user', 'advertiseable')
+            ->select('advertises.*')
             ->orderByDesc('created_at');
 
         return DataTables::of($ads)
@@ -170,7 +171,7 @@ class AdvertisementController extends Controller
             $request->linked_id
         );
 
-        $ad = Advertisement::create([
+        $ad = Advertise::create([
             'user_id' => auth('admin')->id(),
             'advertiser' => 'admin',
             'advertiseable_type' => $morphType,
@@ -198,7 +199,7 @@ class AdvertisementController extends Controller
     | GET  /admin/advertisements/{advertisement}
     |--------------------------------------------------------------------------
     */
-    public function show(Advertisement $advertisement): View
+    public function show(Advertise $advertisement): View
     {
         $advertisement->load(['user', 'advertiseable', 'impressions']);
         $totalImpressions = $advertisement->impressions()->count();
@@ -216,7 +217,7 @@ class AdvertisementController extends Controller
     | GET  /admin/advertisements/{advertisement}/edit
     |--------------------------------------------------------------------------
     */
-    public function edit(Advertisement $advertisement): View
+    public function edit(Advertise $advertisement): View
     {
         $farms  = Farm::where('status', 'active')->orderBy('name')->get(['id', 'name']);
         $ranches = Ranche::where('status', 'active')->orderBy('name')->get(['id', 'name']);
@@ -235,7 +236,7 @@ class AdvertisementController extends Controller
     | POST  /admin/advertisements/{advertisement}  (_method=PUT)
     |--------------------------------------------------------------------------
     */
-    public function update(Request $request, Advertisement $advertisement): JsonResponse
+    public function update(Request $request, Advertise $advertisement): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'title'             => ['required', 'string', 'max:150'],
@@ -296,7 +297,7 @@ class AdvertisementController extends Controller
     | DELETE  /admin/advertisements/{advertisement}
     |--------------------------------------------------------------------------
     */
-    public function destroy(Advertisement $advertisement): JsonResponse
+    public function destroy(Advertise $advertisement): JsonResponse
     {
         FileHandle::fileDelete($advertisement->image);
         $advertisement->delete();
@@ -309,7 +310,7 @@ class AdvertisementController extends Controller
     | PATCH  /admin/advertisements/{advertisement}/toggle-status
     |--------------------------------------------------------------------------
     */
-    public function toggleStatus(Advertisement $advertisement): JsonResponse
+    public function toggleStatus(Advertise $advertisement): JsonResponse
     {
         $newStatus = $advertisement->status === 'active' ? 'inactive' : 'active';
         $advertisement->update(['status' => $newStatus]);
