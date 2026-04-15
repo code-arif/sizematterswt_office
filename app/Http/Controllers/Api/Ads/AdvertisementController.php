@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Ads;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Ad\AdResource;
 use App\Models\AdImpression;
-use App\Models\Advertisement;
+use App\Models\Advertise;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -37,7 +37,7 @@ class AdvertisementController extends Controller
         // We query by each ad's individual radius below
         $defaultRadius = (int) $request->get('radius', 5000); // search window
 
-        $ads = Advertisement::selectRaw("
+        $ads = Advertise::selectRaw("
                 advertisements.*,
                 (6371000 * acos(
                     LEAST(1.0, (
@@ -85,7 +85,7 @@ class AdvertisementController extends Controller
         ]);
     }
 
-    public function dismiss(Advertisement $advertisement): JsonResponse
+    public function dismiss(Advertise $advertisement): JsonResponse
     {
         $user = auth('api')->user();
 
