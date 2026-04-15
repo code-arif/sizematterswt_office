@@ -37,29 +37,36 @@ class AdvertisementController extends Controller
         // We query by each ad's individual radius below
         $defaultRadius = (int) $request->get('radius', 5000); // search window
 
-        $ads = Advertise::selectRaw("
-                advertises.*,
-                (6371000 * acos(
-                    LEAST(1.0, (
-                        cos(radians(?)) * cos(radians(trigger_latitude))
-                        * cos(radians(trigger_longitude) - radians(?))
-                        + sin(radians(?)) * sin(radians(trigger_latitude))
-                    ))
-                )) AS distance
-            ", [$lat, $lng, $lat])
-            ->where('status', 'active')
-            ->where(function ($q) {
-                $q->whereNull('starts_at')->orWhere('starts_at', '<=', now());
-            })
-            ->where(function ($q) {
-                $q->whereNull('ends_at')->orWhere('ends_at', '>=', now());
-            })
-            // Each ad has its OWN radius — use that, not a global radius
-            ->havingRaw('distance <= radius_meters')
-            ->orderBy('distance')
-            ->with('advertiseable')
-            ->limit(3)
-            ->get();
+       $ads = Advertise::selectRaw("
+        advertises.*,
+        (6371000 * acos(
+            LEAST(1.0, (
+                cos(radians(?)) * cos(radians(trigger_latitude))
+                * cos(radians(trigger_longitude) - radians(?))
+                + sin(radians(?)) * sin(radians(trigger_latitude))
+            ))
+        )) AS distance
+    ", [$lat, $lng, $lat])
+    ->where('status', 'active')
+    ->where(function ($q) {
+        $q->whereNull('starts_at')->orWhere('starts_at', '<=', now());
+    })
+    ->where(function ($q) {
+        $q->whereNull('ends_at')->orWhere('ends_at', '>=', now());
+    })
+    ->whereRaw("
+        (6371000 * acos(
+            LEAST(1.0, (
+                cos(radians(?)) * cos(radians(trigger_latitude))
+                * cos(radians(trigger_longitude) - radians(?))
+                + sin(radians(?)) * sin(radians(trigger_latitude))
+            ))
+        )) <= radius_meters
+    ", [$lat, $lng, $lat])
+    ->orderBy('distance')
+    ->with('advertiseable')
+    ->limit(3)
+    ->get();
 
         // Track impressions (fire-and-forget)
         $user = auth('api')->user();
