@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('advertisements', function (Blueprint $table) {
+        Schema::create('advertises', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users');
             $table->string('advertiser')->nullable(); // e.g. 'admin', 'user'
@@ -44,6 +44,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('advertisements');
+        Schema::dropIfExists('advertises');
     }
 };

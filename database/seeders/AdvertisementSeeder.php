@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Carbon\Carbon;
 
 class AdvertisementSeeder extends Seeder
 {
@@ -13,7 +12,7 @@ class AdvertisementSeeder extends Seeder
     {
         for ($i = 1; $i <= 20; $i++) {
 
-            $advertisementId = DB::table('advertisements')->insertGetId([
+            $advertiseId = DB::table('advertises')->insertGetId([
                 'user_id' => rand(1, 5),
                 'advertiser' => rand(0, 1) ? 'admin' : 'user',
 
@@ -23,6 +22,7 @@ class AdvertisementSeeder extends Seeder
                 'title' => "Special Offer #$i",
                 'subtitle' => "Limited time deal #$i",
                 'image' => 'ads/sample-' . rand(1,5) . '.jpg',
+                'cta_label' => 'View Details',
 
                 'trigger_latitude' => 23.8103 + (rand(-100, 100) / 1000),
                 'trigger_longitude' => 90.4125 + (rand(-100, 100) / 1000),
@@ -36,14 +36,14 @@ class AdvertisementSeeder extends Seeder
                 'updated_at' => now(),
             ]);
 
-            // unique user ids for this ad
             $users = collect(range(1,10))->shuffle()->take(rand(1,5));
+            $deviceId = Str::uuid();
 
             foreach ($users as $userId) {
                 DB::table('ad_impressions')->insert([
-                    'advertisement_id' => $advertisementId,
+                    'advertise_id' => $advertiseId,
                     'user_id' => $userId,
-                    'device_id' => Str::uuid(),
+                    'device_id' => $deviceId,
                     'is_dismissed' => rand(0,1),
                     'seen_at' => now()->subMinutes(rand(1,500)),
                     'created_at' => now(),

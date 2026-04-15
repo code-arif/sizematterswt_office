@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('ad_impressions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('advertisement_id')->constrained()->onDelete('cascade');
+            $table->foreignId('advertise_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->string('device_id')->nullable();    // guest fallback
             $table->boolean('is_dismissed')->default(false);
             $table->timestamp('seen_at');
             $table->timestamps();
 
-            $table->unique(['advertisement_id', 'user_id'], 'ad_user_unique');
+            $table->unique(['advertise_id', 'user_id'], 'ad_user_unique');
         });
     }
 
