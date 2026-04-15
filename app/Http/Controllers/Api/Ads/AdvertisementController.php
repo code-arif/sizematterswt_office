@@ -38,7 +38,7 @@ class AdvertisementController extends Controller
         $defaultRadius = (int) $request->get('radius', 5000); // search window
 
         $ads = Advertise::selectRaw("
-                advertisements.*,
+                advertises.*,
                 (6371000 * acos(
                     LEAST(1.0, (
                         cos(radians(?)) * cos(radians(trigger_latitude))
@@ -66,7 +66,7 @@ class AdvertisementController extends Controller
         foreach ($ads as $ad) {
             AdImpression::firstOrCreate(
                 [
-                    'advertisement_id' => $ad->id,
+                    'advertise_id' => $ad->id,
                     'user_id'          => $user?->id,
                 ],
                 [
