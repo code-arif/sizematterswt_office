@@ -61,23 +61,43 @@
                         </div>
                     </div>
 
-                    {{-- Banner Image --}}
+                    {{-- Banner Media --}}
                     <div class="card">
-                        <div class="card-header"><h5 class="card-title mb-0">Banner Image</h5></div>
+                        <div class="card-header"><h5 class="card-title mb-0">Banner Media (Image or Video)</h5></div>
                         <div class="card-body">
 
                             <div class="mb-3">
-                                <p class="text-muted fs-13 mb-1">Current Banner:</p>
-                                <img src="{{ asset('storage/' . $advertisement->image) }}"
-                                    id="imagePreview"
-                                    class="img-fluid rounded border"
-                                    style="max-height:160px;object-fit:cover;width:100%;"
-                                    alt="Banner Preview">
+                                <p class="text-muted fs-13 mb-1">Current Media:</p>
+                                <div id="mediaPreviewContainer">
+                                    @if($advertisement->media_type === 'video')
+                                        <img id="imagePreview"
+                                            class="img-fluid rounded border d-none"
+                                            style="max-height:160px;object-fit:cover;width:100%;"
+                                            alt="Banner Preview">
+                                        <video id="videoPreview"
+                                            src="{{ asset('storage/' . $advertisement->image) }}"
+                                            class="img-fluid rounded border"
+                                            style="max-height:160px;object-fit:cover;width:100%;"
+                                            controls>
+                                        </video>
+                                    @else
+                                        <img src="{{ asset('storage/' . $advertisement->image) }}"
+                                            id="imagePreview"
+                                            class="img-fluid rounded border"
+                                            style="max-height:160px;object-fit:cover;width:100%;"
+                                            alt="Banner Preview">
+                                        <video id="videoPreview"
+                                            class="img-fluid rounded border d-none"
+                                            style="max-height:160px;object-fit:cover;width:100%;"
+                                            controls>
+                                        </video>
+                                    @endif
+                                </div>
                             </div>
 
-                            <label class="form-label">Replace Image <span class="text-muted">(optional)</span></label>
-                            <input type="file" name="image" id="imageInput" class="form-control" accept="image/*">
-                            <div class="form-text">Leave blank to keep current image. JPG, PNG, WEBP — max 2 MB.</div>
+                            <label class="form-label">Replace Media <span class="text-muted">(optional)</span></label>
+                            <input type="file" name="image" id="imageInput" class="form-control" accept="image/*,video/*">
+                            <div class="form-text">Leave blank to keep current media. JPG, PNG, WEBP or MP4, MOV — max 10 MB.</div>
                             <div class="text-danger small mt-1" id="error-image"></div>
 
                         </div>
@@ -394,15 +414,29 @@ document.addEventListener('DOMContentLoaded', function () {
         if (adCircle) adCircle.setRadius(v);
     });
 
-    // ── Image preview ──────────────────────────────────────────────────────
+    // ── Banner media preview ───────────────────────────────────────────────
     document.getElementById('imageInput').addEventListener('change', function () {
         var file = this.files[0];
         if (!file) return;
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            document.getElementById('imagePreview').src = e.target.result;
-        };
-        reader.readAsDataURL(file);
+
+        var imagePreview = document.getElementById('imagePreview');
+        var videoPreview = document.getElementById('videoPreview');
+
+        if (file.type.startsWith('image/')) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                imagePreview.src = e.target.result;
+                imagePreview.classList.remove('d-none');
+                videoPreview.classList.add('d-none');
+                videoPreview.pause();
+            };
+            reader.readAsDataURL(file);
+        } else if (file.type.startsWith('video/')) {
+            var url = URL.createObjectURL(file);
+            videoPreview.src = url;
+            videoPreview.classList.remove('d-none');
+            imagePreview.classList.add('d-none');
+        }
     });
 
     // ── Linked type selector ───────────────────────────────────────────────

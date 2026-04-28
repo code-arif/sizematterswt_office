@@ -65,21 +65,27 @@
                         {{-- Banner Image --}}
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="card-title mb-0">Banner Image <span class="text-danger">*</span></h5>
+                                <h5 class="card-title mb-0">Banner Media (Image or Video) <span class="text-danger">*</span></h5>
                             </div>
                             <div class="card-body">
 
                                 {{-- Preview --}}
                                 <div class="text-center mb-3">
-                                    <img id="imagePreview"
-                                        src="{{ asset('admin/default/placeholder.png') }}"
-                                        class="img-fluid rounded border"
-                                        style="max-height:160px;object-fit:cover;width:100%;"
-                                        alt="Banner Preview">
+                                    <div id="mediaPreviewContainer">
+                                        <img id="imagePreview"
+                                            src="{{ asset('admin/default/placeholder.png') }}"
+                                            class="img-fluid rounded border"
+                                            style="max-height:160px;object-fit:cover;width:100%;"
+                                            alt="Banner Preview">
+                                        <video id="videoPreview"
+                                            class="img-fluid rounded border d-none"
+                                            style="max-height:160px;object-fit:cover;width:100%;"
+                                            controls>
+                                        </video>
+                                    </div>
                                 </div>
-
-                                <input type="file" name="image" id="imageInput" class="form-control" accept="image/*">
-                                <div class="form-text">JPG, PNG, WEBP — max 2 MB. Recommended: 600×200 px (3:1 ratio)</div>
+                                <input type="file" name="image" id="imageInput" class="form-control" accept="image/*,video/*">
+                                <div class="form-text">JPG, PNG, WEBP or MP4, MOV — max 10 MB.</div>
                                 <div class="text-danger small mt-1" id="error-image"></div>
                             </div>
                         </div>
@@ -366,15 +372,29 @@ document.addEventListener('DOMContentLoaded', function () {
         if (adCircle) adCircle.setRadius(v);
     });
 
-    // ── Banner image preview ───────────────────────────────────────────────
+    // ── Banner media preview ───────────────────────────────────────────────
     document.getElementById('imageInput').addEventListener('change', function () {
         var file = this.files[0];
         if (!file) return;
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            document.getElementById('imagePreview').src = e.target.result;
-        };
-        reader.readAsDataURL(file);
+
+        var imagePreview = document.getElementById('imagePreview');
+        var videoPreview = document.getElementById('videoPreview');
+
+        if (file.type.startsWith('image/')) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                imagePreview.src = e.target.result;
+                imagePreview.classList.remove('d-none');
+                videoPreview.classList.add('d-none');
+                videoPreview.pause();
+            };
+            reader.readAsDataURL(file);
+        } else if (file.type.startsWith('video/')) {
+            var url = URL.createObjectURL(file);
+            videoPreview.src = url;
+            videoPreview.classList.remove('d-none');
+            imagePreview.classList.add('d-none');
+        }
     });
 
     // ── Linked type selector ───────────────────────────────────────────────

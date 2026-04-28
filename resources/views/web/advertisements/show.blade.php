@@ -27,8 +27,13 @@
                 {{-- Banner Preview --}}
                 <div class="card">
                     <div class="card-body text-center p-3">
-                        <img src="{{ asset('storage/' . $advertisement->image) }}"
-                            class="rounded w-100" style="max-height:180px;object-fit:cover;" />
+                        @if($advertisement->media_type === 'video')
+                            <video src="{{ asset('storage/' . $advertisement->image) }}"
+                                class="rounded w-100" style="max-height:180px;object-fit:cover;" controls autoplay muted loop></video>
+                        @else
+                            <img src="{{ asset('storage/' . $advertisement->image) }}"
+                                class="rounded w-100" style="max-height:180px;object-fit:cover;" />
+                        @endif
 
                         <div class="mt-3">
                             @if($advertisement->is_expired)

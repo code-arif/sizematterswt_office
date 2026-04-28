@@ -135,7 +135,7 @@ class AdvertisementController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string', 'max:150'],
             'subtitle' => ['nullable', 'string', 'max:255'],
-            'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'image' => ['required', 'file', 'mimes:jpg,jpeg,png,webp,mp4,mov,avi,wmv', 'max:10240'],
             'cta_label' => ['nullable', 'string', 'max:50'],
             'trigger_latitude'  => ['required', 'numeric', 'between:-90,90'],
             'trigger_longitude' => ['required', 'numeric', 'between:-180,180'],
@@ -147,7 +147,10 @@ class AdvertisementController extends Controller
             'linked_id'         => ['nullable', 'integer'],
         ], [
             'title.required'            => 'Ad title is required.',
-            'image.required'            => 'Banner image is required.',
+            'image.required'            => 'Banner media is required.',
+            'image.file'                => 'Please upload a valid file.',
+            'image.mimes'               => 'Supported formats: jpg, jpeg, png, webp, mp4, mov, avi, wmv.',
+            'image.max'                 => 'Maximum file size is 10 MB.',
             'trigger_latitude.required' => 'Please pin a trigger location on the map.',
             'trigger_longitude.required' => 'Please pin a trigger location on the map.',
             'radius_meters.min'         => 'Minimum radius is 100 meters.',
@@ -159,11 +162,16 @@ class AdvertisementController extends Controller
             return $this->validationError($validator);
         }
 
-        // Upload banner image
-        $imagePath = FileHandle::fileUpload($request->file('image'), 'advertisements');
+        // Upload banner media
+        $mediaFile = $request->file('image');
+        $imagePath = FileHandle::fileUpload($mediaFile, 'advertisements');
         if (! $imagePath) {
-            return $this->error('Image upload failed. Please try again.', [], 500);
+            return $this->error('Media upload failed. Please try again.', [], 500);
         }
+
+        // Detect media type
+        $mime = $mediaFile->getMimeType();
+        $mediaType = str_contains($mime, 'video') ? 'video' : 'image';
 
         // Resolve morph type
         [$morphType, $morphId] = $this->resolveMorph(
@@ -179,6 +187,7 @@ class AdvertisementController extends Controller
             'title' => $request->title,
             'subtitle' => $request->subtitle,
             'image' => $imagePath,
+            'media_type' => $mediaType,
             'cta_label' => $request->cta_label ?? 'View Details',
             'trigger_latitude' => $request->trigger_latitude,
             'trigger_longitude' => $request->trigger_longitude,
@@ -241,7 +250,7 @@ class AdvertisementController extends Controller
         $validator = Validator::make($request->all(), [
             'title'             => ['required', 'string', 'max:150'],
             'subtitle'          => ['nullable', 'string', 'max:255'],
-            'image'             => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'image'             => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,mp4,mov,avi,wmv', 'max:10240'],
             'cta_label'         => ['nullable', 'string', 'max:50'],
             'trigger_latitude'  => ['required', 'numeric', 'between:-90,90'],
             'trigger_longitude' => ['required', 'numeric', 'between:-180,180'],
@@ -257,14 +266,20 @@ class AdvertisementController extends Controller
             return $this->validationError($validator);
         }
 
-        // Handle new image
+        // Handle new media
         $imagePath = $advertisement->image;
+        $mediaType = $advertisement->media_type;
+
         if ($request->hasFile('image')) {
             FileHandle::fileDelete($advertisement->image);
-            $imagePath = FileHandle::fileUpload($request->file('image'), 'advertisements');
+            $mediaFile = $request->file('image');
+            $imagePath = FileHandle::fileUpload($mediaFile, 'advertisements');
             if (! $imagePath) {
-                return $this->error('Image upload failed. Please try again.', [], 500);
+                return $this->error('Media upload failed. Please try again.', [], 500);
             }
+            // Detect media type
+            $mime = $mediaFile->getMimeType();
+            $mediaType = str_contains($mime, 'video') ? 'video' : 'image';
         }
 
         [$morphType, $morphId] = $this->resolveMorph(
@@ -278,6 +293,7 @@ class AdvertisementController extends Controller
             'title'               => $request->title,
             'subtitle'            => $request->subtitle,
             'image'               => $imagePath,
+            'media_type'          => $mediaType,
             'cta_label'           => $request->cta_label ?? $advertisement->cta_label,
             'trigger_latitude'    => $request->trigger_latitude,
             'trigger_longitude'   => $request->trigger_longitude,

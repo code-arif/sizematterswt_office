@@ -96,7 +96,14 @@
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, width: '40px' },
                     {
                         data: 'image', name: 'image', orderable: false, searchable: false, width: '80px',
-                        render: function (data) {
+                        render: function (data, type, row) {
+                            if (row.media_type === 'video') {
+                                return '<div class="position-relative">' +
+                                    '<video src="/storage/' + data + '" class="rounded" style="width:70px;height:42px;object-fit:cover;"></video>' +
+                                    '<div class="position-absolute top-50 start-50 translate-middle">' +
+                                    '<i class="ri-play-circle-fill text-white fs-20"></i>' +
+                                    '</div></div>';
+                            }
                             return '<img src="/storage/' + data + '" class="rounded" style="width:70px;height:42px;object-fit:cover;" />';
                         }
                     },

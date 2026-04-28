@@ -19,6 +19,7 @@ class Advertise extends Model
         'title',
         'subtitle',
         'image',
+        'media_type',
         'cta_label',
         'trigger_latitude',
         'trigger_longitude',
