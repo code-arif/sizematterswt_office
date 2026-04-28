@@ -70,6 +70,7 @@ Route::prefix('farms')->name('admin.farms.')->group(function () {
     // Toggles
     Route::patch('/{farm}/toggle-status', [FarmController::class, 'toggleStatus'])->name('toggle-status');
     Route::patch('/{farm}/toggle-featured', [FarmController::class, 'toggleFeatured'])->name('toggle-featured');
+    Route::delete('/{farm}/media/{mediaId}', [FarmController::class, 'removeMedia'])->name('media.delete');
 });
 
 /*

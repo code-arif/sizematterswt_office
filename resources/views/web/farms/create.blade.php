@@ -325,6 +325,27 @@
                             </div>
                         </div>
 
+                        {{-- Gallery Media --}}
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Farm Gallery (Images & Videos)</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="mediaInput" class="form-label">Upload Multiple Files</label>
+                                    <input type="file" class="form-control" id="mediaInput" name="media[]"
+                                        accept="image/*,video/*" multiple>
+                                    <small class="text-muted">You can select multiple images or videos (max 10MB each).</small>
+                                    <div class="text-danger small mt-1" id="error-media"></div>
+                                </div>
+
+                                {{-- Preview Container --}}
+                                <div id="mediaPreviewRow" class="row g-2">
+                                    {{-- JS will inject previews here --}}
+                                </div>
+                            </div>
+                        </div>
+
                         {{-- Marker Settings --}}
                         <div class="card">
                             <div class="card-header"><h5 class="card-title mb-0">Map Marker</h5></div>
@@ -648,6 +669,42 @@ document.getElementById('owner_avatar').addEventListener('change', function(e) {
         reader.readAsDataURL(file);
     }
 });
+
+    /* ── Multi-media preview ────────────────────────────────────────────── */
+    document.getElementById('mediaInput').addEventListener('change', function (e) {
+        const container = document.getElementById('mediaPreviewRow');
+        const files = e.target.files;
+
+        if (files) {
+            Array.from(files).forEach(file => {
+                const col = document.createElement('div');
+                col.className = 'col-4 col-md-3 position-relative';
+
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        col.innerHTML = `
+                            <div class="ratio ratio-1x1 rounded border overflow-hidden">
+                                <img src="${e.target.result}" class="object-fit-cover" alt="preview">
+                            </div>
+                        `;
+                        container.appendChild(col);
+                    }
+                    reader.readAsDataURL(file);
+                } else if (file.type.startsWith('video/')) {
+                    const url = URL.createObjectURL(file);
+                    col.innerHTML = `
+                        <div class="ratio ratio-1x1 rounded border overflow-hidden bg-black d-flex align-items-center justify-content-center">
+                            <i class="ri-video-line text-white fs-24"></i>
+                            <video src="${url}" class="d-none"></video>
+                        </div>
+                        <small class="text-muted d-block text-truncate small">${file.name}</small>
+                    `;
+                    container.appendChild(col);
+                }
+            });
+        }
+    });
 
     /* ── Marker color sync ──────────────────────────────────────────────── */
     const picker    = document.getElementById('markerColorPicker');

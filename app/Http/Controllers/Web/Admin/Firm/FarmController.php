@@ -113,7 +113,9 @@ class FarmController extends Controller
             'marker_icon'  => ['nullable', 'string', 'max:50'],
             'status'       => ['nullable', 'in:active,inactive,pending'],
             'is_featured'  => ['nullable', 'boolean'],
-             // ── Owner fields ──────────────────────────────────────────────
+            'media'        => ['nullable', 'array'],
+            'media.*'      => ['file', 'mimes:jpg,jpeg,png,webp,mp4,mov,avi,wmv', 'max:10240'],
+            // ── Owner fields ──────────────────────────────────────────────
             'owner_name'    => ['nullable', 'string', 'max:150'],
             'owner_address' => ['nullable', 'string', 'max:255'],
             'owner_phone'   => ['nullable', 'string', 'max:20'],
@@ -143,7 +145,7 @@ class FarmController extends Controller
             }
         }
 
-         $ownerAvatarPath = null;
+        $ownerAvatarPath = null;
         if ($request->hasFile('owner_avatar')) {
             $ownerAvatarPath = FileHandle::fileUpload($request->file('owner_avatar'), 'farms/owners');
             if (! $ownerAvatarPath) {
@@ -177,12 +179,31 @@ class FarmController extends Controller
             'marker_icon'  => $request->marker_icon  ?? 'farm_pin',
             'status'       => $request->status       ?? 'active',
             'is_featured'  => $request->boolean('is_featured'),
-             // ── Owner fields ──────────────────────────────────────────────
+            // ── Owner fields ──────────────────────────────────────────────
             'owner_name'    => $request->owner_name,
             'owner_address' => $request->owner_address,
             'owner_phone'   => $request->owner_phone,
             'owner_avatar'  => $ownerAvatarPath,
         ]);
+
+        // ── Handle multiple media uploads ──────────────────────────────────
+        if ($request->hasFile('media')) {
+            foreach ($request->file('media') as $file) {
+                $is_video = str_contains($file->getMimeType(), 'video');
+                $folder = $is_video ? 'farms/videos' : 'farms/images';
+                $path = FileHandle::fileUpload($file, $folder);
+
+                if ($path) {
+                    $farm->media()->create([
+                        'file_path'  => $path,
+                        'file_name'  => $file->getClientOriginalName(),
+                        'mime_type'  => $file->getMimeType(),
+                        'file_size'  => $file->getSize(),
+                        'media_type' => $is_video ? 'video' : 'image',
+                    ]);
+                }
+            }
+        }
 
         return $this->success('Farm created successfully.', [
             'farm' => $farm,
@@ -201,12 +222,14 @@ class FarmController extends Controller
     //     return view('web.farms.show', compact('farm'));
     // }
     public function show($id)
-{
-    // Ekhane 'media' eager load kora jate gallery thikmoto pay
-    $farm = Farm::with('media', 'admin')->findOrFail($id);
+    {
+        // Ekhane 'media' eager load kora jate gallery thikmoto pay
+        $farm = Farm::with('media', 'admin')->findOrFail($id);
 
-    return view('web.farms.show', compact('farm'));
-}
+        // return $farm;exit();
+
+        return view('web.farms.show', compact('farm'));
+    }
 
 
 
@@ -246,7 +269,9 @@ class FarmController extends Controller
             'marker_icon'  => ['nullable', 'string', 'max:50'],
             'status'       => ['nullable', 'in:active,inactive,pending'],
             'is_featured'  => ['nullable', 'boolean'],
-             // ── Owner fields ──────────────────────────────────────────────
+            'media'        => ['nullable', 'array'],
+            'media.*'      => ['file', 'mimes:jpg,jpeg,png,webp,mp4,mov,avi,wmv', 'max:10240'],
+            // ── Owner fields ──────────────────────────────────────────────
             'owner_name'    => ['nullable', 'string', 'max:150'],
             'owner_address' => ['nullable', 'string', 'max:255'],
             'owner_phone'   => ['nullable', 'string', 'max:20'],
@@ -302,12 +327,31 @@ class FarmController extends Controller
             'marker_icon'  => $request->marker_icon  ?? $farm->marker_icon,
             'status'       => $request->status       ?? $farm->status,
             'is_featured'  => $request->boolean('is_featured'),
-             // ── Owner fields ──────────────────────────────────────────────
+            // ── Owner fields ──────────────────────────────────────────────
             'owner_name'    => $request->owner_name,
             'owner_address' => $request->owner_address,
             'owner_phone'   => $request->owner_phone,
             'owner_avatar'  => $ownerAvatarPath,
         ]);
+
+        // ── Handle new media uploads ───────────────────────────────────────
+        if ($request->hasFile('media')) {
+            foreach ($request->file('media') as $file) {
+                $is_video = str_contains($file->getMimeType(), 'video');
+                $folder = $is_video ? 'farms/videos' : 'farms/images';
+                $path = FileHandle::fileUpload($file, $folder);
+
+                if ($path) {
+                    $farm->media()->create([
+                        'file_path'  => $path,
+                        'file_name'  => $file->getClientOriginalName(),
+                        'mime_type'  => $file->getMimeType(),
+                        'file_size'  => $file->getSize(),
+                        'media_type' => $is_video ? 'video' : 'image',
+                    ]);
+                }
+            }
+        }
 
         return $this->success('Farm updated successfully.', [
             'farm' => $farm->fresh(),
@@ -361,6 +405,22 @@ class FarmController extends Controller
         );
     }
 
+    /**
+     * Remove a single media file from a farm
+     */
+    public function removeMedia(Farm $farm, $mediaId): JsonResponse
+    {
+        $media = $farm->media()->findOrFail($mediaId);
 
+        if ($media->file_path) {
+            FileHandle::fileDelete($media->file_path);
+        }
+        if ($media->thumbnail_path) {
+            FileHandle::fileDelete($media->thumbnail_path);
+        }
 
+        $media->delete();
+
+        return $this->success('Media deleted successfully.');
+    }
 }
