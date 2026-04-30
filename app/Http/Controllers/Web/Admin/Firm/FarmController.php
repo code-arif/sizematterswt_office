@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Web\Admin\Firm;
 use App\Helpers\FileHandle;
 use App\Http\Controllers\Controller;
 use App\Models\Farm;
+use App\Models\User;
+use App\Notifications\FarmNotification;
 use App\Traits\AdminApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 use Yajra\DataTables\Facades\DataTables;
@@ -205,6 +208,10 @@ class FarmController extends Controller
             }
         }
 
+        // Send notification to all users
+        $users = User::all();
+        Notification::send($users, new FarmNotification($farm, 'created'));
+
         return $this->success('Farm created successfully.', [
             'farm' => $farm,
             'redirect' => route('admin.farms.index'),
@@ -353,6 +360,10 @@ class FarmController extends Controller
             }
         }
 
+        // Send notification to all users
+        $users = User::all();
+        Notification::send($users, new FarmNotification($farm, 'updated'));
+
         return $this->success('Farm updated successfully.', [
             'farm' => $farm->fresh(),
         ]);
@@ -368,6 +379,10 @@ class FarmController extends Controller
         if ($farm->thumbnail) {
             FileHandle::fileDelete($farm->thumbnail);
         }
+
+        // Send notification to all users
+        $users = User::all();
+        Notification::send($users, new FarmNotification($farm, 'deleted'));
 
         $farm->delete();   // soft delete
 
