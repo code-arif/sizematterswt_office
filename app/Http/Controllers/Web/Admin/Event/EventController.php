@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Web\Admin\Event;
 use App\Helpers\FileHandle;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Models\User;
+use App\Notifications\EventNotification;
 use App\Traits\AdminApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 use Yajra\DataTables\Facades\DataTables;
@@ -180,6 +183,10 @@ class EventController extends Controller
             'status'         => $request->status ?? 'upcoming',
         ]);
 
+        // Send notification to all users
+        $users = User::all();
+        Notification::send($users, new EventNotification($event, 'created'));
+
         return $this->success('Event created successfully.', [
             'event'    => $event,
             'redirect' => route('admin.events.index'),
@@ -291,6 +298,10 @@ class EventController extends Controller
             'status'         => $request->status          ?? $event->status,
         ]);
 
+        // Send notification to all users
+        $users = User::all();
+        Notification::send($users, new EventNotification($event, 'updated'));
+
         return $this->success('Event updated successfully.', [
             'event' => $event->fresh(),
         ]);
@@ -304,6 +315,11 @@ class EventController extends Controller
     public function destroy(Event $event): JsonResponse
     {
         if ($event->image) FileHandle::fileDelete($event->image);
+
+        // Send notification to all users
+        $users = User::all();
+        Notification::send($users, new EventNotification($event, 'deleted'));
+
         $event->delete();
         return $this->success('Event deleted successfully.');
     }

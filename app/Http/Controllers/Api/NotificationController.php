@@ -99,6 +99,9 @@ class NotificationController extends Controller
             'ranche_updates' => $user->unreadNotifications()
                 ->where('type', 'App\Notifications\RancheNotification')
                 ->count(),
+            'event_updates' => $user->unreadNotifications()
+                ->where('type', 'App\Notifications\EventNotification')
+                ->count(),
         ];
 
         return $this->success('Notification counts retrieved', $counts, 200);
@@ -234,6 +237,18 @@ class NotificationController extends Controller
                 ];
                 break;
 
+            case 'App\Notifications\EventNotification':
+                $formatted['data'] = [
+                    'event_id' => $data['event_id'] ?? null,
+                    'event_title' => $data['event_title'] ?? null,
+                    'action' => $data['action'] ?? null,
+                    'message' => $data['message'] ?? null,
+                    'image' => $data['image'] ?? null,
+                    'start_date' => $data['start_date'] ?? null,
+                    'city' => $data['city'] ?? null,
+                ];
+                break;
+
             case 'App\Notifications\RancheNotification':
                 $formatted['data'] = [
                     'ranche_id' => $data['ranche_id'] ?? null,
@@ -261,6 +276,7 @@ class NotificationController extends Controller
         $types = [
             'farm_update' => 'App\Notifications\FarmNotification',
             'ranche_update' => 'App\Notifications\RancheNotification',
+            'event_update' => 'App\Notifications\EventNotification',
         ];
 
         return $types[$type] ?? null;
@@ -274,6 +290,7 @@ class NotificationController extends Controller
         $types = [
             'App\Notifications\FarmNotification' => 'farm_update',
             'App\Notifications\RancheNotification' => 'ranche_update',
+            'App\Notifications\EventNotification' => 'event_update',
         ];
 
         return $types[$class] ?? 'general';
