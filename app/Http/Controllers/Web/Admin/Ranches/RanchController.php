@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Web\Admin\Ranches;
 use App\Helpers\FileHandle;
 use App\Http\Controllers\Controller;
 use App\Models\Ranche;
+use App\Models\User;
+use App\Notifications\RancheNotification;
 use App\Traits\AdminApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 use Yajra\DataTables\Facades\DataTables;
@@ -182,6 +185,10 @@ class RanchController extends Controller
             'owner_avatar'  => $ownerAvatarPath,
         ]);
 
+        // Send notification to all users
+        $users = User::all();
+        Notification::send($users, new RancheNotification($ranch, 'created'));
+
         return $this->success('Ranch created successfully.', [
             'ranch'    => $ranch,
             'redirect' => route('admin.ranches.index'),
@@ -299,6 +306,10 @@ public function show($id)
             'owner_avatar'  => $ownerAvatarPath,
         ]);
 
+        // Send notification to all users
+        $users = User::all();
+        Notification::send($users, new RancheNotification($ranch, 'updated'));
+
         return $this->success('Ranch updated successfully.', [
             'ranch' => $ranch->fresh(),
         ]);
@@ -313,6 +324,10 @@ public function show($id)
     {
         if ($ranch->thumbnail) FileHandle::fileDelete($ranch->thumbnail);
         if ($ranch->owner_avatar) FileHandle::fileDelete($ranch->owner_avatar);
+        // Send notification to all users
+        $users = User::all();
+        Notification::send($users, new RancheNotification($ranch, 'deleted'));
+
         $ranch->delete();
         return $this->success('Ranch deleted successfully.');
     }
