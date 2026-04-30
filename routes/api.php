@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\Farm\FarmController;
 use App\Http\Controllers\Api\Farm\FavoriteController;
 use App\Http\Controllers\Api\Farm\VisitedController;
 use App\Http\Controllers\Api\Map\MapController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\Ranche\RancheController;
 use Illuminate\Support\Facades\Route;
 
@@ -154,7 +155,37 @@ Route::group(['prefix' => 'v1'], function ($router) {
         Route::post('/ads/nearby', [AdvertisementController::class, 'nearby'])->name('api.ads.nearby');
         Route::post('/ads/{advertisement}/dismiss', [AdvertisementController::class, 'dismiss'])->name('api.ads.dismiss');
     });
+
+
+    // Notification
+    Route::prefix('notifications')->middleware(['auth:api'])->group(function () {
+        // Get all notifications (with optional type filter)
+        Route::get('/', [NotificationController::class, 'index']); 
+
+        // Get only unread notifications
+        Route::get('/unread', [NotificationController::class, 'unread']);
+
+        // Get notification counts by type
+        Route::get('/counts', [NotificationController::class, 'counts']); 
+
+        // Get single notification
+        Route::get('/{notificationId}', [NotificationController::class, 'show']); 
+
+        // Mark single notification as read
+        Route::post('/{notificationId}/mark-as-read', [NotificationController::class, 'markAsRead']); 
+
+        // Mark all as read (with optional type filter)
+        Route::post('/mark-all-as-read', [NotificationController::class, 'markAllAsRead']); 
+
+        // Delete notification
+        Route::delete('/delete/{notificationId}', [NotificationController::class, 'destroy']); 
+
+        // Clear all read notifications
+        Route::delete('/clear-read', [NotificationController::class, 'clearRead']); 
+    });
 });
+
+
 
 
 /*
