@@ -19,6 +19,7 @@ This repository contains the **Laravel backend REST API** that powers the mobile
 ## 👥 User Roles
 
 ### 🧑‍💼 Admin
+
 - Add and manage Farms & Ranches
 - Upload advertisements
 - Manage user subscriptions
@@ -26,6 +27,7 @@ This repository contains the **Laravel backend REST API** that powers the mobile
 - Control active/inactive status of content
 
 ### 👤 User
+
 - View farms & ranches on map
 - Navigate to selected locations
 - Mark places as visited
@@ -36,28 +38,34 @@ This repository contains the **Laravel backend REST API** that powers the mobile
 ## 🧭 Core Features
 
 ### 🗺️ Navigation System
+
 - Show fastest route to farm/ranch
 - GPS-based real-time navigation
 - Map integration ready
 
 ### 🎨 Color Map Indicators
-| Color       | Meaning      |
-|-------------|--------------|
-| 🟢 **Green**   | Farm        |
-| 🟤 **Brown**   | Ranch       |
-| 🔴 **Red**     | Visited     |
+
+| Color        | Meaning |
+| ------------ | ------- |
+| 🟢 **Green** | Farm    |
+| 🟤 **Brown** | Ranch   |
+| 🔴 **Red**   | Visited |
 
 ### 📍 Visited Tracking
+
 - Mark farm/ranch as visited
 - Store visit history
 - Visited locations shown in red on map
 
 ### 📞 Click to Call
+
 - Direct call to farm/ranch phone number
 - Mobile-optimized API responses
 
 ### 📢 Advertisement System
+
 Admins can upload ads for:
+
 - Fertilizer
 - Animal feed
 - Tractors
@@ -66,10 +74,12 @@ Admins can upload ads for:
 Users see **location-based and relevant ads** within map radius.
 
 ### 💳 Subscription System
+
 - Yearly subscription required (Example: **$49.99 / year**)
 - Only subscribed users can access map data
 
 **Features:**
+
 - Subscription check middleware
 - Expiry validation
 - Active subscription API endpoint
@@ -99,6 +109,7 @@ Users see **location-based and relevant ads** within map radius.
 - **API**: RESTful Architecture
 
 ### Key Features Implemented
+
 - API Authentication & Role-based Access
 - Media Upload Support
 - Subscription Management
@@ -108,22 +119,22 @@ Users see **location-based and relevant ads** within map radius.
 ## 📡 API Modules
 
 - **Authentication**
-  - Register, Login, Logout, Profile
+    - Register, Login, Logout, Profile
 
 - **Farms**
-  - List farms, Show farm, Add/Update/Delete (Admin only)
+    - List farms, Show farm, Add/Update/Delete (Admin only)
 
 - **Ranches**
-  - List ranches, Show ranch, Add/Update/Delete (Admin only)
+    - List ranches, Show ranch, Add/Update/Delete (Admin only)
 
 - **Visited**
-  - Mark as visited, Get visited list
+    - Mark as visited, Get visited list
 
 - **Advertisements**
-  - List ads, Nearby ads, Upload ads (Admin)
+    - List ads, Nearby ads, Upload ads (Admin)
 
 - **Subscription**
-  - Subscribe, Check subscription status, Expiry validation
+    - Subscribe, Check subscription status, Expiry validation
 
 ## 📂 Project Structure
 
@@ -137,3 +148,4 @@ app/
 ├── Services/
 ├── Traits/
 │   └── ApiResponse.php
+```
