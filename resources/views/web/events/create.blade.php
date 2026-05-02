@@ -301,16 +301,37 @@
                             </div>
                         </div>
 
+                        {{-- Event Gallery --}}
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Event Gallery</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="media" class="form-label">Upload Gallery Files (Images/Videos)</label>
+                                    <input type="file" class="form-control" id="media" name="media[]" multiple
+                                        accept="image/*,video/mp4">
+                                    <small class="text-muted">You can select multiple images or videos (max 10MB per file).</small>
+                                    <div class="text-danger small mt-1" id="error-media"></div>
+                                </div>
+
+                                {{-- Preview Container --}}
+                                <div id="mediaPreviewContainer" class="row g-3">
+                                    {{-- Previews will be injected here via JS --}}
+                                </div>
+                            </div>
+                        </div>
+
                         {{-- Event Image --}}
                         <div class="card">
-                            <div class="card-header"><h5 class="card-title mb-0">Event Image</h5></div>
+                            <div class="card-header"><h5 class="card-title mb-0">Event Thumbnail / Cover</h5></div>
                             <div class="card-body">
                                 <div class="text-center mb-3">
                                     <img id="imagePreview"
                                         src="{{ asset('admin/assets/images/default/event-placeholder.jpg') }}"
                                         class="img-fluid rounded" style="max-height:180px;object-fit:cover;width:100%;" alt="">
                                 </div>
-                                <label for="image" class="form-label">Upload Image</label>
+                                <label for="image" class="form-label">Upload Cover Image</label>
                                 <input type="file" class="form-control" id="image" name="image"
                                     accept="image/jpeg,image/png,image/webp">
                                 <small class="text-muted">JPG, PNG, WEBP — max 2 MB</small>
@@ -477,6 +498,44 @@ document.addEventListener('DOMContentLoaded', function () {
         reader.onload = e => document.getElementById('imagePreview_owner_avatar').src = e.target.result;
         reader.readAsDataURL(file);
     });
+
+    /* ── Gallery Preview ────────────────────────────────────────────────── */
+    document.getElementById('media').addEventListener('change', function () {
+        const container = document.getElementById('mediaPreviewContainer');
+        container.innerHTML = '';
+        const files = Array.from(this.files);
+
+        files.forEach(file => {
+            const col = document.createElement('div');
+            col.className = 'col-lg-3 col-md-4 col-6';
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'position-relative rounded overflow-hidden shadow-sm border';
+            wrapper.style.aspectRatio = '16/9';
+
+            if (file.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.className = 'w-100 h-100';
+                img.style.objectFit = 'cover';
+                const reader = new FileReader();
+                reader.onload = e => img.src = e.target.result;
+                reader.readAsDataURL(file);
+                wrapper.appendChild(img);
+            } else if (file.type.startsWith('video/')) {
+                wrapper.style.background = '#1a1a1a';
+                wrapper.innerHTML = `
+                    <div class="d-flex flex-column align-items-center justify-content-center h-100 text-white">
+                        <i class="ri-video-line fs-24 mb-1"></i>
+                        <small class="px-2 text-center text-truncate w-100">${file.name}</small>
+                    </div>
+                    <span class="position-absolute top-0 end-0 m-1 badge bg-primary">Video</span>
+                `;
+            }
+            col.appendChild(wrapper);
+            container.appendChild(col);
+        });
+    });
+
     /* ── Helpers ────────────────────────────────────────────────────────── */
     function clearErrors() {
         document.querySelectorAll('[id^="error-"]').forEach(el => el.textContent = '');

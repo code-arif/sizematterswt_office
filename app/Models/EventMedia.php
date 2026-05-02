@@ -14,7 +14,7 @@ class EventMedia extends Model
     protected $table = 'event_media';
 
     protected $fillable = [
-        'event_id',
+        'events_id',
         'file_path',
         'file_name',
         'mime_type',
@@ -42,7 +42,7 @@ class EventMedia extends Model
 
     public function event(): BelongsTo
     {
-        return $this->belongsTo(Event::class);
+        return $this->belongsTo(Event::class, 'events_id');
     }
 
     // -------------------------------------------------------------------------

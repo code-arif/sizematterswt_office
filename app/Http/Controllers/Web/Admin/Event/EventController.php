@@ -126,6 +126,8 @@ class EventController extends Controller
             'eventable_type' => ['nullable', 'string', 'max:100'],
             'eventable_id'   => ['nullable', 'integer'],
             'status'         => ['nullable', 'in:upcoming,ongoing,completed,cancelled'],
+            'media'          => ['nullable', 'array'],
+            'media.*'        => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,mp4', 'max:10240'], // 10MB
         ], [
             'title.required'      => 'Event title is required.',
             'address.required'    => 'Address is required.',
@@ -182,6 +184,24 @@ class EventController extends Controller
             'eventable_id'   => $request->eventable_id,
             'status'         => $request->status ?? 'upcoming',
         ]);
+
+        // Multiple Media Upload
+        if ($request->hasFile('media')) {
+            foreach ($request->file('media') as $file) {
+                $type = str_contains($file->getMimeType(), 'video') ? 'video' : 'image';
+                $path = FileHandle::fileUpload($file, 'events/' . ($type === 'video' ? 'videos' : 'images'));
+
+                if ($path) {
+                    $event->media()->create([
+                        'file_path'  => $path,
+                        'file_name'  => $file->getClientOriginalName(),
+                        'mime_type'  => $file->getMimeType(),
+                        'file_size'  => $file->getSize(),
+                        'media_type' => $type,
+                    ]);
+                }
+            }
+        }
 
         // Send notification to all users
         $users = User::all();
@@ -249,6 +269,8 @@ class EventController extends Controller
             'eventable_type' => ['nullable', 'string', 'max:100'],
             'eventable_id'   => ['nullable', 'integer'],
             'status'         => ['nullable', 'in:upcoming,ongoing,completed,cancelled'],
+            'media'          => ['nullable', 'array'],
+            'media.*'        => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,mp4', 'max:10240'],
         ]);
 
         if ($validator->fails()) {
@@ -298,6 +320,24 @@ class EventController extends Controller
             'status'         => $request->status          ?? $event->status,
         ]);
 
+        // Multiple Media Upload
+        if ($request->hasFile('media')) {
+            foreach ($request->file('media') as $file) {
+                $type = str_contains($file->getMimeType(), 'video') ? 'video' : 'image';
+                $path = FileHandle::fileUpload($file, 'events/' . ($type === 'video' ? 'videos' : 'images'));
+
+                if ($path) {
+                    $event->media()->create([
+                        'file_path'  => $path,
+                        'file_name'  => $file->getClientOriginalName(),
+                        'mime_type'  => $file->getMimeType(),
+                        'file_size'  => $file->getSize(),
+                        'media_type' => $type,
+                    ]);
+                }
+            }
+        }
+
         // Send notification to all users
         $users = User::all();
         Notification::send($users, new EventNotification($event, 'updated'));
@@ -334,5 +374,23 @@ class EventController extends Controller
         $newStatus = $event->status === 'upcoming' ? 'ongoing' : 'upcoming';
         $event->update(['status' => $newStatus]);
         return $this->success('Event status updated to ' . ucfirst($newStatus) . '.', ['status' => $newStatus]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE  /admin/events/{event}/media/{mediaId}
+    |--------------------------------------------------------------------------
+    */
+    public function removeMedia(Event $event, $mediaId): JsonResponse
+    {
+        $media = $event->media()->findOrFail($mediaId);
+
+        if ($media->file_path) {
+            FileHandle::fileDelete($media->file_path);
+        }
+
+        $media->delete();
+
+        return $this->success('Media file removed successfully.');
     }
 }

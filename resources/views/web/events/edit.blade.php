@@ -311,16 +311,65 @@
                             </div>
                         </div>
 
+                        {{-- Event Gallery --}}
+                        <div class="card">
+                            <div class="card-header d-flex align-items-center">
+                                <h5 class="card-title mb-0 flex-grow-1">Event Gallery</h5>
+                                <span class="badge bg-info-subtle text-info">{{ $event->media->count() }} Files</span>
+                            </div>
+                            <div class="card-body">
+                                {{-- Existing Media Grid --}}
+                                @if($event->media->isNotEmpty())
+                                    <div class="row g-3 mb-4">
+                                        @foreach($event->media as $media)
+                                            <div class="col-lg-3 col-md-4 col-6 media-item-wrapper" id="media-item-{{ $media->id }}">
+                                                <div class="position-relative rounded overflow-hidden shadow-sm border" style="aspect-ratio:16/9;">
+                                                    @if($media->media_type === 'video')
+                                                        <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center bg-dark text-white">
+                                                            <i class="ri-video-line fs-24"></i>
+                                                            <small class="text-truncate px-2 w-100 text-center">{{ $media->file_name }}</small>
+                                                        </div>
+                                                    @else
+                                                        <img src="{{ $media->url }}" class="w-100 h-100" style="object-fit:cover;">
+                                                    @endif
+
+                                                    <div class="position-absolute top-0 end-0 p-1">
+                                                        <button type="button" class="btn btn-sm btn-danger remove-media-btn"
+                                                            data-id="{{ $media->id }}" title="Delete Media">
+                                                            <i class="ri-delete-bin-fill"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <hr class="text-muted opacity-25">
+                                @endif
+
+                                {{-- New Media Upload --}}
+                                <div class="mt-3">
+                                    <label for="media" class="form-label">Add New Media (Images/Videos)</label>
+                                    <input type="file" class="form-control" id="media" name="media[]" multiple
+                                        accept="image/*,video/mp4">
+                                    <small class="text-muted">Max 10MB per file. New files will be appended to the gallery.</small>
+                                    <div class="text-danger small mt-1" id="error-media"></div>
+                                </div>
+
+                                {{-- Preview Container for new files --}}
+                                <div id="mediaPreviewContainer" class="row g-3 mt-1"></div>
+                            </div>
+                        </div>
+
                         {{-- Event Image --}}
                         <div class="card">
-                            <div class="card-header"><h5 class="card-title mb-0">Event Image</h5></div>
+                            <div class="card-header"><h5 class="card-title mb-0">Event Thumbnail / Cover</h5></div>
                             <div class="card-body">
                                 <div class="text-center mb-3">
                                     <img id="imagePreview"
                                         src="{{ $event->image ? asset( $event->image) : asset('admin/assets/images/default/event-placeholder.jpg') }}"
                                         class="img-fluid rounded" style="max-height:180px;object-fit:cover;width:100%;" alt="">
                                 </div>
-                                <label for="image" class="form-label">Change Image</label>
+                                <label for="image" class="form-label">Change Cover Image</label>
                                 <input type="file" class="form-control" id="image" name="image"
                                     accept="image/jpeg,image/png,image/webp">
                                 <small class="text-muted">Leave blank to keep existing. JPG, PNG, WEBP — max 2 MB.</small>
@@ -469,6 +518,59 @@ document.addEventListener('DOMContentLoaded', function () {
         const reader = new FileReader();
         reader.onload = e => document.getElementById('imagePreview').src = e.target.result;
         reader.readAsDataURL(file);
+    });
+
+    /* ── Gallery Management ────────────────────────────────────────────── */
+
+    // Preview new files
+    document.getElementById('media').addEventListener('change', function () {
+        const container = document.getElementById('mediaPreviewContainer');
+        container.innerHTML = '';
+        Array.from(this.files).forEach(file => {
+            const col = document.createElement('div');
+            col.className = 'col-lg-3 col-md-4 col-6';
+            const wrapper = document.createElement('div');
+            wrapper.className = 'position-relative rounded overflow-hidden shadow-sm border';
+            wrapper.style.aspectRatio = '16/9';
+
+            if (file.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.className = 'w-100 h-100'; img.style.objectFit = 'cover';
+                const reader = new FileReader();
+                reader.onload = e => img.src = e.target.result;
+                reader.readAsDataURL(file);
+                wrapper.appendChild(img);
+            } else {
+                wrapper.style.background = '#1a1a1a';
+                wrapper.innerHTML = `<div class="d-flex flex-column align-items-center justify-content-center h-100 text-white">
+                    <i class="ri-video-line fs-24 mb-1"></i><small class="px-2 text-center text-truncate w-100">${file.name}</small>
+                </div><span class="position-absolute top-0 end-0 m-1 badge bg-primary">New Video</span>`;
+            }
+            col.appendChild(wrapper);
+            container.appendChild(col);
+        });
+    });
+
+    // Delete existing media
+    document.querySelectorAll('.remove-media-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const mediaId = this.dataset.id;
+            Alert.confirm('This file will be permanently deleted.', {
+                title: 'Delete Media File?', type: 'danger', confirmText: 'Yes, delete it'
+            }).then(confirmed => {
+                if (!confirmed) return;
+
+                const url = "{{ route('admin.events.media.delete', [$event->id, ':mediaId']) }}"
+                    .replace(':mediaId', mediaId);
+
+                axios.delete(url, { data: { _token: '{{ csrf_token() }}' } })
+                    .then(res => {
+                        Toast.success(res.data.message);
+                        document.getElementById(`media-item-${mediaId}`).remove();
+                    })
+                    .catch(err => Toast.fromResponse(err.response?.data));
+            });
+        });
     });
 
     /* ── Helpers ────────────────────────────────────────────────────────── */

@@ -108,6 +108,7 @@ Route::prefix('events')->name('admin.events.')->group(function () {
     Route::put('/{event}',[EventController::class, 'update'])->name('update');
     Route::delete('/{event}',[EventController::class, 'destroy'])->name('destroy');
     Route::patch('/{event}/toggle-status',[EventController::class, 'toggleStatus'])->name('toggle-status');
+    Route::delete('/{event}/media/{mediaId}', [EventController::class, 'removeMedia'])->name('media.delete');
 });
 
 Route::prefix('advertisements')->name('admin.advertisements.')->group(function () {
