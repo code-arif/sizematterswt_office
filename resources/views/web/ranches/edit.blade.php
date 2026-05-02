@@ -351,6 +351,48 @@
                             </div>
                         </div>
 
+                        {{-- Gallery Media --}}
+                        <div class="card">
+                            <div class="card-header d-flex align-items-center">
+                                <h5 class="card-title mb-0 flex-grow-1">Ranch Gallery</h5>
+                                <span class="badge bg-primary-subtle text-primary">{{ $ranch->media->count() }} Files</span>
+                            </div>
+                            <div class="card-body">
+                                {{-- Existing Media --}}
+                                <div class="row g-2 mb-4" id="existingMediaRow">
+                                    @foreach($ranch->media as $media)
+                                        <div class="col-4 col-md-3 position-relative media-item" data-id="{{ $media->id }}">
+                                            <div class="ratio ratio-1x1 rounded border overflow-hidden bg-light">
+                                                @if($media->media_type === 'video')
+                                                    <div class="d-flex align-items-center justify-content-center h-100 bg-black">
+                                                        <i class="ri-video-line text-white fs-20"></i>
+                                                    </div>
+                                                @else
+                                                    <img src="{{ asset('storage/' . $media->file_path) }}" class="object-fit-cover" alt="">
+                                                @endif
+                                            </div>
+                                            <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 remove-existing-media"
+                                                data-id="{{ $media->id }}" style="padding: 2px 5px;">
+                                                <i class="ri-close-line"></i>
+                                            </button>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                {{-- New Uploads --}}
+                                <div class="mb-3">
+                                    <label for="mediaInput" class="form-label">Add More Media</label>
+                                    <input type="file" class="form-control" id="mediaInput" name="media[]"
+                                        accept="image/*,video/*" multiple>
+                                    <small class="text-muted">JPG, PNG, WEBP or MP4 — max 10 MB per file.</small>
+                                    <div class="text-danger small mt-1" id="error-media"></div>
+                                </div>
+
+                                {{-- New Preview Container --}}
+                                <div id="mediaPreviewRow" class="row g-2"></div>
+                            </div>
+                        </div>
+
                         <div class="card">
                             <div class="card-header">
                                 <h5 class="card-title mb-0">Map Marker</h5>
@@ -724,6 +766,70 @@
                 const reader = new FileReader();
                 reader.onload = e => document.getElementById('thumbnailPreview').src = e.target.result;
                 reader.readAsDataURL(file);
+            });
+
+            /* ── Multi-media preview & delete ──────────────────────────────────── */
+            document.getElementById('mediaInput').addEventListener('change', function(e) {
+                const container = document.getElementById('mediaPreviewRow');
+                const files = e.target.files;
+
+                if (files) {
+                    Array.from(files).forEach(file => {
+                        const col = document.createElement('div');
+                        col.className = 'col-4 col-md-3 position-relative';
+
+                        if (file.type.startsWith('image/')) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                col.innerHTML = `
+                            <div class="ratio ratio-1x1 rounded border overflow-hidden">
+                                <img src="${e.target.result}" class="object-fit-cover" alt="preview">
+                            </div>
+                        `;
+                                container.appendChild(col);
+                            }
+                            reader.readAsDataURL(file);
+                        } else if (file.type.startsWith('video/')) {
+                            const url = URL.createObjectURL(file);
+                            col.innerHTML = `
+                        <div class="ratio ratio-1x1 rounded border overflow-hidden bg-black d-flex align-items-center justify-content-center">
+                            <i class="ri-video-line text-white fs-24"></i>
+                            <video src="${url}" class="d-none"></video>
+                        </div>
+                    `;
+                            container.appendChild(col);
+                        }
+                    });
+                }
+            });
+
+            // Remove existing media
+            document.querySelectorAll('.remove-existing-media').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const mediaId = this.dataset.id;
+                    const ranchId = '{{ $ranch->id }}';
+
+                    Alert.confirm('This file will be deleted permanently.', {
+                        title: 'Delete Media?',
+                        type: 'danger'
+                    }).then(confirmed => {
+                        if (!confirmed) return;
+
+                        const url = "{{ route('admin.ranches.media.delete', [$ranch->id, ':mediaId']) }}"
+                            .replace(':mediaId', mediaId);
+                        axios.delete(url, {
+                                data: {
+                                    _token: '{{ csrf_token() }}'
+                                }
+                            })
+                            .then(res => {
+                                Toast.success(res.data.message);
+                                document.querySelector(`.media-item[data-id="${mediaId}"]`)
+                                    .remove();
+                            })
+                            .catch(err => Toast.fromResponse(err.response?.data));
+                    });
+                });
             });
 
             const picker = document.getElementById('markerColorPicker');

@@ -89,6 +89,7 @@ Route::prefix('ranches')->name('admin.ranches.')->group(function () {
     Route::delete('/{ranch}', [RanchController::class, 'destroy'])->name('destroy');
     Route::patch('/{ranch}/toggle-status', [RanchController::class, 'toggleStatus'])->name('toggle-status');
     Route::patch('/{ranch}/toggle-featured', [RanchController::class, 'toggleFeatured'])->name('toggle-featured');
+    Route::delete('/{ranch}/media/{mediaId}', [RanchController::class, 'removeMedia'])->name('media.delete');
 });
 
 

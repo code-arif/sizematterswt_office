@@ -147,7 +147,7 @@ class EventController extends Controller
                 return $this->error('Image upload failed. Please try again.', [], 500);
             }
         }
-                $owner_avatar = null;
+        $owner_avatar = null;
         if ($request->hasFile('owner_avatar')) {
             $owner_avatar = FileHandle::fileUpload($request->file('image'), 'events/images/owner_avatar/');
             if (! $owner_avatar) {
@@ -160,7 +160,7 @@ class EventController extends Controller
             'owner_name'          => $request->owner_name,
             'owner_address'          => $request->owner_address,
             'owner_phone'          => $request->owner_phone,
-            'owner_avatar'          =>$owner_avatar,
+            'owner_avatar'          => $owner_avatar,
             'title'          => $request->title,
             'description'    => $request->description,
             'address'        => $request->address,
@@ -200,12 +200,12 @@ class EventController extends Controller
     */
 
     public function show($id)
-{
-    // Ekhane 'media' eager load kora jate gallery thikmoto pay
-    $event = Event::with('media', 'admin')->findOrFail($id);
+    {
+        // Ekhane 'media' eager load kora jate gallery thikmoto pay
+        $event = Event::with('media', 'admin')->findOrFail($id);
 
-    return view('web.events.show', compact('event'));
-}
+        return view('web.events.show', compact('event'));
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -263,7 +263,7 @@ class EventController extends Controller
                 return $this->error('Image upload failed. Please try again.', [], 500);
             }
         }
-                    $owner_avatar = null;
+        $owner_avatar = null;
         if ($request->hasFile('owner_avatar')) {
             $owner_avatar = FileHandle::fileUpload($request->file('owner_avatar'), 'events/images/owner_avatar/');
             if (! $owner_avatar) {
@@ -275,7 +275,7 @@ class EventController extends Controller
             'owner_name'          => $request->owner_name,
             'owner_address'          => $request->owner_address,
             'owner_phone'          => $request->owner_phone,
-            'owner_avatar'          =>$owner_avatar,
+            'owner_avatar'          => $owner_avatar,
             'title'          => $request->title,
             'description'    => $request->description,
             'address'        => $request->address,

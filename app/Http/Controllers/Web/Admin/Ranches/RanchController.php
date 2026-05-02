@@ -116,6 +116,8 @@ class RanchController extends Controller
             'marker_icon'   => ['nullable', 'string', 'max:50'],
             'status'        => ['nullable', 'in:active,inactive,pending'],
             'is_featured'   => ['nullable', 'boolean'],
+            'media'         => ['nullable', 'array'],
+            'media.*'       => ['file', 'mimes:jpg,jpeg,png,webp,mp4,mov,avi,wmv', 'max:10240'],
             // ── Owner fields ──────────────────────────────────────────────
             'owner_name'    => ['nullable', 'string', 'max:150'],
             'owner_address' => ['nullable', 'string', 'max:255'],
@@ -185,6 +187,25 @@ class RanchController extends Controller
             'owner_avatar'  => $ownerAvatarPath,
         ]);
 
+        // ── Handle multiple media uploads ──────────────────────────────────
+        if ($request->hasFile('media')) {
+            foreach ($request->file('media') as $file) {
+                $is_video = str_contains($file->getMimeType(), 'video');
+                $folder = $is_video ? 'ranches/videos' : 'ranches/images';
+                $path = FileHandle::fileUpload($file, $folder);
+
+                if ($path) {
+                    $ranch->media()->create([
+                        'file_path'  => $path,
+                        'file_name'  => $file->getClientOriginalName(),
+                        'mime_type'  => $file->getMimeType(),
+                        'file_size'  => $file->getSize(),
+                        'media_type' => $is_video ? 'video' : 'image',
+                    ]);
+                }
+            }
+        }
+
         // Send notification to all users
         $users = User::all();
         Notification::send($users, new RancheNotification($ranch, 'created'));
@@ -245,6 +266,8 @@ public function show($id)
             'marker_icon'   => ['nullable', 'string', 'max:50'],
             'status'        => ['nullable', 'in:active,inactive,pending'],
             'is_featured'   => ['nullable', 'boolean'],
+            'media'         => ['nullable', 'array'],
+            'media.*'       => ['file', 'mimes:jpg,jpeg,png,webp,mp4,mov,avi,wmv', 'max:10240'],
             // ── Owner fields ──────────────────────────────────────────────
             'owner_name'    => ['nullable', 'string', 'max:150'],
             'owner_address' => ['nullable', 'string', 'max:255'],
@@ -306,6 +329,25 @@ public function show($id)
             'owner_avatar'  => $ownerAvatarPath,
         ]);
 
+        // ── Handle new media uploads ───────────────────────────────────────
+        if ($request->hasFile('media')) {
+            foreach ($request->file('media') as $file) {
+                $is_video = str_contains($file->getMimeType(), 'video');
+                $folder = $is_video ? 'ranches/videos' : 'ranches/images';
+                $path = FileHandle::fileUpload($file, $folder);
+
+                if ($path) {
+                    $ranch->media()->create([
+                        'file_path'  => $path,
+                        'file_name'  => $file->getClientOriginalName(),
+                        'mime_type'  => $file->getMimeType(),
+                        'file_size'  => $file->getSize(),
+                        'media_type' => $is_video ? 'video' : 'image',
+                    ]);
+                }
+            }
+        }
+
         // Send notification to all users
         $users = User::all();
         Notification::send($users, new RancheNotification($ranch, 'updated'));
@@ -356,5 +398,24 @@ public function show($id)
             $ranch->is_featured ? 'Ranch marked as featured.' : 'Ranch removed from featured.',
             ['is_featured' => $ranch->is_featured]
         );
+    }
+
+    /**
+     * Remove a single media file from a ranch
+     */
+    public function removeMedia(Ranche $ranch, $mediaId): JsonResponse
+    {
+        $media = $ranch->media()->findOrFail($mediaId);
+
+        if ($media->file_path) {
+            FileHandle::fileDelete($media->file_path);
+        }
+        if ($media->thumbnail_path) {
+            FileHandle::fileDelete($media->thumbnail_path);
+        }
+
+        $media->delete();
+
+        return $this->success('Media deleted successfully.');
     }
 }
