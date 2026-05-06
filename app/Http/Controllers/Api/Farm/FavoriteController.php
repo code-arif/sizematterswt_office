@@ -32,16 +32,27 @@ class FavoriteController extends Controller
         $query = Favorite::with('favoriteable')
             ->where('user_id', $user->id);
 
-        // Filter by type
-        if ($request->filled('type')) {
+        // Filtering by type (supports 'type' or 'query_string' parameter)
+        $filterType = $request->get('query_string') ?? $request->get('type');
+        if ($filterType) {
             $typeMap = [
                 'farm'  => Farm::class,
                 'ranch' => Ranche::class,
                 'event' => Event::class,
             ];
-            $morphType = $typeMap[$request->type] ?? null;
-            if ($morphType) {
-                $query->where('favoriteable_type', $morphType);
+
+            // Support comma-separated types (e.g. ?query_string=farm,ranch)
+            $types = explode(',', $filterType);
+            $morphTypes = [];
+            foreach ($types as $t) {
+                $t = trim(strtolower($t));
+                if (isset($typeMap[$t])) {
+                    $morphTypes[] = $typeMap[$t];
+                }
+            }
+
+            if (!empty($morphTypes)) {
+                $query->whereIn('favoriteable_type', $morphTypes);
             }
         }
 
