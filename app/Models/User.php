@@ -87,7 +87,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function ranches(): HasMany
     {
-        return $this->hasMany(Ranch::class, 'admin_id');
+        return $this->hasMany(Ranche::class, 'admin_id');
     }
 
     public function events(): HasMany
@@ -109,5 +109,11 @@ class User extends Authenticatable implements JWTSubject
     public function visitedPlaces(): HasMany
     {
         return $this->hasMany(VisitedPlace::class);
+    }
+
+    /** User notes */
+    public function notes(): HasMany
+    {
+        return $this->hasMany(Note::class);
     }
 }

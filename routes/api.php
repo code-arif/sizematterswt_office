@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\Farm\FavoriteController;
 use App\Http\Controllers\Api\Farm\VisitedController;
 use App\Http\Controllers\Api\Map\MapController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\NoteController;
 use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\Ranche\RancheController;
 use Illuminate\Support\Facades\Route;
@@ -148,6 +149,15 @@ Route::group(['prefix' => 'v1'], function ($router) {
             Route::post('/', [VisitedController::class, 'store']); // DONE: store visited place
             Route::delete('/{visited}', [VisitedController::class, 'destroy']); // DONE: remove visited place from list
         });
+
+        // Notes
+        Route::prefix('notes')->group(function () {
+            Route::get('/', [NoteController::class, 'index']); // DONE: note list
+            Route::post('/store', [NoteController::class, 'store']); // DONE: store note
+            Route::get('/show/{note}', [NoteController::class, 'show']); // DONE: note details
+            Route::post('/update/{note}', [NoteController::class, 'update']); // DONE: update note
+            Route::delete('/delete/{note}', [NoteController::class, 'destroy']); // DONE: remove note
+        });
     });
 
 
@@ -161,28 +171,28 @@ Route::group(['prefix' => 'v1'], function ($router) {
     // Notification
     Route::prefix('notifications')->middleware(['auth:api'])->group(function () {
         // Get all notifications (with optional type filter)
-        Route::get('/', [NotificationController::class, 'index']); 
+        Route::get('/', [NotificationController::class, 'index']);
 
         // Get only unread notifications
         Route::get('/unread', [NotificationController::class, 'unread']);
 
         // Get notification counts by type
-        Route::get('/counts', [NotificationController::class, 'counts']); 
+        Route::get('/counts', [NotificationController::class, 'counts']);
 
         // Get single notification
-        Route::get('/{notificationId}', [NotificationController::class, 'show']); 
+        Route::get('/{notificationId}', [NotificationController::class, 'show']);
 
         // Mark single notification as read
-        Route::post('/{notificationId}/mark-as-read', [NotificationController::class, 'markAsRead']); 
+        Route::post('/{notificationId}/mark-as-read', [NotificationController::class, 'markAsRead']);
 
         // Mark all as read (with optional type filter)
-        Route::post('/mark-all-as-read', [NotificationController::class, 'markAllAsRead']); 
+        Route::post('/mark-all-as-read', [NotificationController::class, 'markAllAsRead']);
 
         // Delete notification
-        Route::delete('/delete/{notificationId}', [NotificationController::class, 'destroy']); 
+        Route::delete('/delete/{notificationId}', [NotificationController::class, 'destroy']);
 
         // Clear all read notifications
-        Route::delete('/clear-read', [NotificationController::class, 'clearRead']); 
+        Route::delete('/clear-read', [NotificationController::class, 'clearRead']);
     });
 
     // Public Pages
