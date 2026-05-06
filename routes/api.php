@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\Farm\FavoriteController;
 use App\Http\Controllers\Api\Farm\VisitedController;
 use App\Http\Controllers\Api\Map\MapController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\Ranche\RancheController;
 use Illuminate\Support\Facades\Route;
 
@@ -183,6 +184,10 @@ Route::group(['prefix' => 'v1'], function ($router) {
         // Clear all read notifications
         Route::delete('/clear-read', [NotificationController::class, 'clearRead']); 
     });
+
+    // Public Pages
+    Route::get('/privacy-policy', [PageController::class, 'getPrivacyPolicy']);
+    Route::get('/terms-conditions', [PageController::class, 'getTermsConditions']);
 });
 
 
