@@ -184,7 +184,38 @@
                 @php
                     // System Settings dropdown is open when any child route is active
                     $systemSettingsOpen = request()->routeIs('admin.profile.index', 'admin.settings.*');
+                    $privacyTermsOpen = request()->routeIs('admin.privacy-policy.*', 'admin.terms-conditions.*');
                 @endphp
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link {{ $privacyTermsOpen ? 'active' : '' }}"
+                        href="#sidebarPrivacyTerms" data-bs-toggle="collapse" role="button"
+                        aria-expanded="{{ $privacyTermsOpen ? 'true' : 'false' }}"
+                        aria-controls="sidebarPrivacyTerms">
+                        <i class="ri-booklet-line"></i>
+                        <span>Privacy & Terms</span>
+                    </a>
+
+                    <div class="collapse menu-dropdown {{ $privacyTermsOpen ? 'show' : '' }}"
+                        id="sidebarPrivacyTerms">
+                        <ul class="nav nav-sm flex-column">
+
+                            <li class="nav-item">
+                                <a href="{{ route('admin.privacy-policy.index') }}"
+                                    class="nav-link {{ request()->routeIs('admin.privacy-policy.*') ? 'active' : '' }}">
+                                    <i class="ri-shield-line"></i> Privacy Policy
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="{{ route('admin.terms-conditions.index') }}"
+                                    class="nav-link {{ request()->routeIs('admin.terms-conditions.*') ? 'active' : '' }}">
+                                    <i class="ri-shield-check-line"></i>Terms & Conditions
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
 
                 <li class="nav-item">
                     <a class="nav-link menu-link {{ $systemSettingsOpen ? 'active' : '' }}"

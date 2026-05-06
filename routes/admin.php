@@ -7,6 +7,8 @@ use App\Http\Controllers\Web\Admin\Contact\AdminMailingController;
 use App\Http\Controllers\Web\Admin\Dashboard\AdminDashboardController;
 use App\Http\Controllers\Web\Admin\Event\EventController;
 use App\Http\Controllers\Web\Admin\Firm\FarmController;
+use App\Http\Controllers\Web\Admin\PrivacyandTerms\PrivacyPolicyController;
+use App\Http\Controllers\Web\Admin\PrivacyandTerms\TermsConditionsController;
 use App\Http\Controllers\Web\Admin\Ranches\RanchController;
 use Illuminate\Support\Facades\Route;
 
@@ -75,7 +77,7 @@ Route::prefix('farms')->name('admin.farms.')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Firm Manage
+| Ranches Manage
 |--------------------------------------------------------------------------
 */
 Route::prefix('ranches')->name('admin.ranches.')->group(function () {
@@ -132,3 +134,26 @@ Route::prefix('advertisements')->name('admin.advertisements.')->group(function (
     // Toggle status
     Route::patch('/{advertisement}/toggle-status', [AdvertisementController::class, 'toggleStatus'])->name('toggle-status');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Privacy & Terms
+|--------------------------------------------------------------------------
+*/
+
+// Privacy Policy
+Route::prefix('privacy-policy')->name('admin.privacy-policy.')->group(function () {
+    Route::get('/', [PrivacyPolicyController::class, 'index'])->name('index');
+    Route::post('/', [PrivacyPolicyController::class, 'store'])->name('store');
+    Route::get('/edit', [PrivacyPolicyController::class, 'edit'])->name('edit');
+    Route::patch('/{id}', [PrivacyPolicyController::class, 'update'])->name('update');
+});
+
+// Terms & Conditions
+Route::prefix('terms-conditions')->name('admin.terms-conditions.')->group(function () {
+    Route::get('/', [TermsConditionsController::class, 'index'])->name('index');
+    Route::post('/', [TermsConditionsController::class, 'store'])->name('store');
+    Route::get('/edit', [TermsConditionsController::class, 'edit'])->name('edit');
+    Route::patch('/{id}', [TermsConditionsController::class, 'update'])->name('update');
+});
+
