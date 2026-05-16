@@ -154,6 +154,7 @@ Route::group(['prefix' => 'v1'], function ($router) {
         Route::prefix('notes')->group(function () {
             Route::get('/', [NoteController::class, 'index']); // DONE: note list
             Route::post('/store', [NoteController::class, 'store']); // DONE: store note
+            Route::post('/auto-save', [NoteController::class, 'autoSave']); // DONE: auto-save note (create or update)
             Route::get('/show/{note}', [NoteController::class, 'show']); // DONE: note details
             Route::post('/update/{note}', [NoteController::class, 'update']); // DONE: update note
             Route::delete('/delete/{note}', [NoteController::class, 'destroy']); // DONE: remove note

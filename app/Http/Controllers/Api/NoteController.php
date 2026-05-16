@@ -97,4 +97,41 @@ class NoteController extends Controller
 
         return $this->success('Note deleted successfully.');
     }
+
+    /**
+     * Auto-save note (create or update)
+     * Used for continuous saving (e.g., on debounced key presses)
+     */
+    public function autoSave(Request $request): JsonResponse
+    {
+        $request->validate([
+            'note_id'   => 'nullable|exists:notes,id',
+            'title'     => 'nullable|string|max:255',
+            'content'   => 'required|string',
+            'color'     => 'nullable|string|max:50',
+        ]);
+
+        $userId = auth('api')->id();
+        $noteId = $request->note_id;
+
+        if ($noteId) {
+            // Update existing note
+            $note = Note::findOrFail($noteId);
+            if ($note->user_id !== $userId) {
+                return $this->error('Unauthorized.', null, 403);
+            }
+            $note->update($request->only(['title', 'content', 'color']));
+        } else {
+            // Create new note
+            $note = auth('api')->user()->notes()->create([
+                'title'   => $request->title,
+                'content' => $request->content,
+                'color'   => $request->get('color', 'green'),
+            ]);
+        }
+
+        return $this->success('Note saved successfully.', [
+            'note' => new NoteResource($note)
+        ], $noteId ? 200 : 201);
+    }
 }
