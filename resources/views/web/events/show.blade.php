@@ -429,7 +429,7 @@ document.addEventListener('DOMContentLoaded', function () {
             title: 'Delete Event?', type: 'danger', confirmText: 'Yes, delete it',
         }).then(confirmed => {
             if (!confirmed) return;
-            axios.delete(`/admin/events/${eventId}`, {
+            axios.delete(`/events/${eventId}`, {
                 data: { _token: document.querySelector('meta[name="csrf-token"]').content }
             })
             .then(res => {

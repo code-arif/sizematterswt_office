@@ -199,7 +199,7 @@ $(function () {
     $('#toggleStatusBtn').on('click', function () {
         var btn = $(this);
         $.ajax({
-            url: '/admin/advertisements/' + btn.data('id') + '/toggle-status',
+            url: '/advertisements/' + btn.data('id') + '/toggle-status',
             method: 'PATCH',
             data: { _token: '{{ csrf_token() }}' },
             success: function (res) {

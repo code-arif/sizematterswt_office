@@ -178,7 +178,7 @@
             /* ── Toggle status ───────────────────────────────────────────────────── */
             $('#eventsTable').on('click', '.toggle-status', function () {
                 const id = this.dataset.id;
-                axios.patch(`/admin/events/${id}/toggle-status`, {
+                axios.patch(`/events/${id}/toggle-status`, {
                     _token: document.querySelector('meta[name="csrf-token"]').content
                 })
                     .then(res => {

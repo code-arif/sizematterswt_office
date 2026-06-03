@@ -60,26 +60,7 @@
         </div>
     </div>
 
-    {{-- Delete Confirm Modal --}}
-    <div class="modal fade" id="deleteModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Delete Advertisement</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body text-center py-4">
-                    <i class="ri-delete-bin-line text-danger fs-48 d-block mb-3"></i>
-                    <h5>Are you sure?</h5>
-                    <p class="text-muted">This action cannot be undone.</p>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                    <button id="confirmDelete" class="btn btn-danger">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>
+
 @endsection
 
 @push('scripts')
@@ -143,7 +124,7 @@
             $(document).on('click', '.toggle-ad-status', function () {
                 var id = $(this).data('id');
                 $.ajax({
-                    url: '/admin/advertisements/' + id + '/toggle-status',
+                    url: '/advertisements/' + id + '/toggle-status',
                     method: 'PATCH',
                     data: { _token: '{{ csrf_token() }}' },
                     success: function (res) {
@@ -154,25 +135,27 @@
             });
 
             // ── Delete ─────────────────────────────────────────────────────────────
-            var deleteId = null;
             $(document).on('click', '.delete-ad', function () {
-                deleteId = $(this).data('id');
-                new bootstrap.Modal('#deleteModal').show();
-            });
+                const id = $(this).data('id');
 
-            $('#confirmDelete').on('click', function () {
-                if (!deleteId) return;
-                $.ajax({
-                    url: '/admin/advertisements/' + deleteId,
-                    method: 'POST',
-                    data: { _token: '{{ csrf_token() }}', _method: 'DELETE' },
-                    success: function (res) {
-                        bootstrap.Modal.getInstance('#deleteModal').hide();
+                Alert.confirm('This advertisement will be permanently removed.', {
+                    title: 'Delete Advertisement?',
+                    type: 'danger',
+                    confirmText: 'Yes, delete it',
+                }).then(confirmed => {
+                    if (!confirmed) return;
+
+                    axios.delete(`/advertisements/${id}`, {
+                        data: {
+                            _token: document.querySelector('meta[name="csrf-token"]')
+                                .content
+                        }
+                    })
+                    .then(res => {
+                        Toast.success(res.data.message);
                         table.ajax.reload(null, false);
-                        toastr.success(res.message);
-                        deleteId = null;
-                    },
-                    error: function () { toastr.error('Delete failed.'); }
+                    })
+                    .catch(err => Toast.fromResponse(err.response?.data));
                 });
             });
         });

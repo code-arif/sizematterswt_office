@@ -413,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const ranchId = window.__RANCH_ID;
 
     document.getElementById('toggleStatusBtn').addEventListener('click', function () {
-        axios.patch(`/admin/ranches/${ranchId}/toggle-status`, {
+        axios.patch(`/ranches/${ranchId}/toggle-status`, {
             _token: document.querySelector('meta[name="csrf-token"]').content
         })
         .then(res => { Toast.success(res.data.message); setTimeout(() => location.reload(), 800); })
@@ -421,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('toggleFeaturedBtn').addEventListener('click', function () {
-        axios.patch(`/admin/ranches/${ranchId}/toggle-featured`, {
+        axios.patch(`/ranches/${ranchId}/toggle-featured`, {
             _token: document.querySelector('meta[name="csrf-token"]').content
         })
         .then(res => { Toast.success(res.data.message); setTimeout(() => location.reload(), 800); })
@@ -433,7 +433,7 @@ document.addEventListener('DOMContentLoaded', function () {
             title: 'Delete Ranch?', type: 'danger', confirmText: 'Yes, delete it',
         }).then(confirmed => {
             if (!confirmed) return;
-            axios.delete(`/admin/ranches/${ranchId}`, {
+            axios.delete(`/ranches/${ranchId}`, {
                 data: { _token: document.querySelector('meta[name="csrf-token"]').content }
             })
             .then(res => {

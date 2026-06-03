@@ -168,7 +168,7 @@
             /* ── Toggle status ─────────────────────────────────────────────────────── */
             $('#ranchesTable').on('click', '.toggle-status', function () {
                 const id = this.dataset.id;
-                axios.patch(`/admin/ranches/${id}/toggle-status`, {
+                axios.patch(`/ranches/${id}/toggle-status`, {
                     _token: document.querySelector('meta[name="csrf-token"]').content
                 })
                     .then(res => {
