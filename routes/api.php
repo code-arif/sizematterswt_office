@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Ads\AdvertisementController;
 use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\RegisterController;
+use App\Http\Controllers\Api\Auth\SocialLoginController;
 use App\Http\Controllers\Api\Auth\UserProfileController;
 use App\Http\Controllers\Api\Auth\V2\ForgotPasswordController as V2ForgotPasswordController;
 use App\Http\Controllers\Api\Auth\V2\RegisterController as V2RegisterController;
@@ -48,6 +49,16 @@ Route::group(['prefix' => 'v1'], function ($router) {
 
         //login
         Route::post('/login', [LoginController::class, 'login']); // DONE: user login
+
+        // Social Login (Mobile — token-based)
+        Route::post('/auth/google', [SocialLoginController::class, 'googleLogin'])->middleware('throttle:10,1'); // Google login via access token
+        Route::post('/auth/apple', [SocialLoginController::class, 'appleLogin'])->middleware('throttle:10,1'); // Apple login via identity token
+
+        // Social Login (Web — OAuth redirect flow)
+        Route::get('/auth/google/redirect', [SocialLoginController::class, 'googleRedirect']);
+        Route::get('/auth/google/callback', [SocialLoginController::class, 'googleCallback']);
+        Route::get('/auth/apple/redirect', [SocialLoginController::class, 'appleRedirect']);
+        Route::get('/auth/apple/callback', [SocialLoginController::class, 'appleCallback']);
 
         //forgot password
         Route::post('/forgot-password', [ForgotPasswordController::class, 'sendOtp']); // DONE: send forgot password otp

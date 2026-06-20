@@ -39,4 +39,27 @@ return [
         'key' => env('GOOGLE_MAPS_API_KEY'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Google OAuth (Social Login)
+    |--------------------------------------------------------------------------
+    */
+    'google' => [
+        'client_id'     => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect'      => env('GOOGLE_REDIRECT_URI', env('APP_URL') . '/api/v1/auth/google/callback'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Apple OAuth (Social Login)
+    |--------------------------------------------------------------------------
+    */
+    'apple' => [
+        'client_id'     => env('APPLE_CLIENT_ID'),
+        'client_secret' => env('APPLE_CLIENT_SECRET'),
+        'redirect'      => env('APPLE_REDIRECT_URI', env('APP_URL') . '/api/v1/auth/apple/callback'),
+        'bundle_id'     => env('APPLE_BUNDLE_ID'),
+    ],
+
 ];
