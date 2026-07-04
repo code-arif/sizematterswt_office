@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\Auth\SocialLoginController;
 use App\Http\Controllers\Api\Auth\UserProfileController;
+use App\Http\Controllers\Api\Auth\V2SocialLoginController;
 use App\Http\Controllers\Api\Auth\V2\ForgotPasswordController as V2ForgotPasswordController;
 use App\Http\Controllers\Api\Auth\V2\RegisterController as V2RegisterController;
 use App\Http\Controllers\Api\Chat\ConversationController;
@@ -16,8 +17,8 @@ use App\Http\Controllers\Api\Farm\FarmController;
 use App\Http\Controllers\Api\Farm\FavoriteController;
 use App\Http\Controllers\Api\Farm\VisitedController;
 use App\Http\Controllers\Api\Map\MapController;
-use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\NoteController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\Ranche\RancheController;
 use Illuminate\Support\Facades\Route;
@@ -25,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 // health check
 Route::get('/health-check', function () {
     return response()->json([
-        'status' => "OK",
+        'status'  => "OK",
         'Message' => "Project is ready to serve",
     ], 200);
 });
@@ -42,17 +43,16 @@ Route::group(['prefix' => 'v1'], function ($router) {
     |--------------------------------------------------------------------------
     */
     Route::group(['middleware' => 'guest:api'], function () {
-        //register
-        Route::post('/register', [RegisterController::class, 'register']); // DONE: user registraion
-        Route::post('/verify-email', [RegisterController::class, 'VerifyEmail']); // DONE: email verification
-        Route::post('/resend-otp', [RegisterController::class, 'ResendOtp']); // DONE: resend otp
 
-        //login
+        Route::post('/register', [RegisterController::class, 'register']);        // DONE: user registraion
+        Route::post('/verify-email', [RegisterController::class, 'VerifyEmail']); // DONE: email verification
+        Route::post('/resend-otp', [RegisterController::class, 'ResendOtp']);     // DONE: resend otp
+
         Route::post('/login', [LoginController::class, 'login']); // DONE: user login
 
-        // Social Login (Mobile — token-based)
         Route::post('/auth/google', [SocialLoginController::class, 'googleLogin'])->middleware('throttle:10,1'); // Google login via access token
-        Route::post('/auth/apple', [SocialLoginController::class, 'appleLogin'])->middleware('throttle:10,1'); // Apple login via identity token
+        Route::post('/auth/apple', [SocialLoginController::class, 'appleLogin'])->middleware('throttle:10,1');   // Apple login via identity token
+        Route::post('social/signin', [V2SocialLoginController::class, 'socialSignin']);
 
         // Social Login (Web — OAuth redirect flow)
         Route::get('/auth/google/redirect', [SocialLoginController::class, 'googleRedirect']);
@@ -60,10 +60,9 @@ Route::group(['prefix' => 'v1'], function ($router) {
         Route::get('/auth/apple/redirect', [SocialLoginController::class, 'appleRedirect']);
         Route::get('/auth/apple/callback', [SocialLoginController::class, 'appleCallback']);
 
-        //forgot password
         Route::post('/forgot-password', [ForgotPasswordController::class, 'sendOtp']); // DONE: send forgot password otp
         Route::post('/password/resend-otp', [ForgotPasswordController::class, 'resendOtp']);
-        Route::post('/verify-otp', [ForgotPasswordController::class, 'verifyOtp']); // DONE: verify forgot password otp
+        Route::post('/verify-otp', [ForgotPasswordController::class, 'verifyOtp']);         // DONE: verify forgot password otp
         Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']); // DONE: Reset password
     });
 
@@ -74,12 +73,12 @@ Route::group(['prefix' => 'v1'], function ($router) {
     */
     Route::group(['middleware' => 'auth:api'], function ($router) {
         Route::post('/refresh-token', [LoginController::class, 'refreshToken']); // DONE: refresh token
-        Route::post('/logout', [LoginController::class, 'logout']); // DONE: logout
+        Route::post('/logout', [LoginController::class, 'logout']);              // DONE: logout
 
-        Route::get('/profile', [UserProfileController::class, 'profile']); // DONE: user profile
-        Route::post('/update-profile', [UserProfileController::class, 'updateProfile']); // DONE: update profile
-        Route::post('/update-avatar', [UserProfileController::class, 'updateAvatar']); // DONE: update avatar
-        Route::delete('/delete-profile', [UserProfileController::class, 'destroy']); // DONE: delete profile
+        Route::get('/profile', [UserProfileController::class, 'profile']);                 // DONE: user profile
+        Route::post('/update-profile', [UserProfileController::class, 'updateProfile']);   // DONE: update profile
+        Route::post('/update-avatar', [UserProfileController::class, 'updateAvatar']);     // DONE: update avatar
+        Route::delete('/delete-profile', [UserProfileController::class, 'destroy']);       // DONE: delete profile
         Route::post('/change-password', [UserProfileController::class, 'changePassword']); // DONE: change password
     });
 
@@ -124,24 +123,23 @@ Route::group(['prefix' => 'v1'], function ($router) {
         Route::post('/{message}/reaction', [MessageController::class, 'toggleReaction']);
     });
 
-    // Global map (no auth needed — public)
     Route::get('/map', [MapController::class, 'index']); // DONE: get gloabal map data
 
     // Farm list / detail
     Route::group(['prefix' => 'farms', 'middleware' => 'auth:api'], function () {
-        Route::get('/', [FarmController::class, 'index']); // DONE: farm list
+        Route::get('/', [FarmController::class, 'index']);      // DONE: farm list
         Route::get('/{farm}', [FarmController::class, 'show']); // DONE: farm details
     });
 
     // Ranche list / detail
     Route::prefix('ranche')->name('api.ranche.')->group(function () {
-        Route::get('/', [RancheController::class, 'index'])->name('index'); // DONE: ranche list
+        Route::get('/', [RancheController::class, 'index'])->name('index');       // DONE: ranche list
         Route::get('/{ranche}', [RancheController::class, 'show'])->name('show'); // DONE: ranche details
     });
 
     // Public event list / detail
     Route::prefix('events')->name('api.events.')->group(function () {
-        Route::get('/', [EventController::class, 'index'])->name('index'); // DONE: event list
+        Route::get('/', [EventController::class, 'index'])->name('index');      // DONE: event list
         Route::get('/{event}', [EventController::class, 'show'])->name('show'); // DONE: event details
     });
 
@@ -166,19 +164,17 @@ Route::group(['prefix' => 'v1'], function ($router) {
             Route::get('/', [NoteController::class, 'index']); // DONE: note list
             Route::post('/store', [NoteController::class, 'store']); // DONE: store note
             Route::post('/auto-save', [NoteController::class, 'autoSave']); // DONE: auto-save note (create or update)
-            Route::get('/show/{note}', [NoteController::class, 'show']); // DONE: note details
+            Route::get('/show/{note}', [NoteController::class, 'show']);// DONE: note details
             Route::post('/update/{note}', [NoteController::class, 'update']); // DONE: update note
             Route::delete('/delete/{note}', [NoteController::class, 'destroy']); // DONE: remove note
         });
     });
-
 
     // Advertisements
     Route::middleware('auth:api')->group(function () {
         Route::post('/ads/nearby', [AdvertisementController::class, 'nearby'])->name('api.ads.nearby');
         Route::post('/ads/{advertisement}/dismiss', [AdvertisementController::class, 'dismiss'])->name('api.ads.dismiss');
     });
-
 
     // Notification
     Route::prefix('notifications')->middleware(['auth:api'])->group(function () {
@@ -212,9 +208,6 @@ Route::group(['prefix' => 'v1'], function ($router) {
     Route::get('/terms-conditions', [PageController::class, 'getTermsConditions']);
 });
 
-
-
-
 /*
 |--------------------------------------------------------------------------
 | API V2 — Authentication Routes (link-based, no OTP)
@@ -223,23 +216,23 @@ Route::group(['prefix' => 'v1'], function ($router) {
 Route::group(['prefix' => 'v2'], function () {
     Route::group(['middleware' => 'guest:api'], function () {
 
-        // Registration
-        Route::post('/register', [V2RegisterController::class, 'register']); // DONE: user registration
-        Route::get('/verify-email', [V2RegisterController::class, 'verifyEmail']); // DONE: otp verification
+                                                                                                  // Registration
+        Route::post('/register', [V2RegisterController::class, 'register']);                      // DONE: user registration
+        Route::get('/verify-email', [V2RegisterController::class, 'verifyEmail']);                // DONE: otp verification
         Route::post('/resend-verification', [V2RegisterController::class, 'resendVerification']); // DONE: resend verification token
 
-        // Login (reuse v1 LoginController)
+                                                                  // Login (reuse v1 LoginController)
         Route::post('/login', [LoginController::class, 'login']); // DONE: user login
 
-        // Forgot Password
-        Route::post('/forgot-password', [V2ForgotPasswordController::class, 'sendResetLink']); // DONE: forgot password
+                                                                                                    // Forgot Password
+        Route::post('/forgot-password', [V2ForgotPasswordController::class, 'sendResetLink']);      // DONE: forgot password
         Route::get('/verify-reset-token', [V2ForgotPasswordController::class, 'verifyResetToken']); // DONE: verify password reset token
-        Route::post('/reset-password', [V2ForgotPasswordController::class, 'resetPassword']); // DONE: Set new password
+        Route::post('/reset-password', [V2ForgotPasswordController::class, 'resetPassword']);       // DONE: Set new password
     });
 
     Route::group(['middleware' => 'auth:api'], function () {
-        // Reuse v1 protected routes as-is or add v2-specific ones here
+                                                                                 // Reuse v1 protected routes as-is or add v2-specific ones here
         Route::post('/refresh-token', [LoginController::class, 'refreshToken']); // DONE: refresh token
-        Route::post('/logout', [LoginController::class, 'logout']); // DONE: logout
+        Route::post('/logout', [LoginController::class, 'logout']);              // DONE: logout
     });
 });

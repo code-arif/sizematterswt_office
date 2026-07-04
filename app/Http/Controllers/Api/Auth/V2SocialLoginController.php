@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Models\Profile;
 use App\Models\User;
 use App\Traits\ApiResponse;
 use Exception;
@@ -38,8 +40,6 @@ class V2SocialLoginController extends Controller
 
             if ($provider === 'apple') {
                 $socialUser = $this->verifyAppleToken($request->access_token, $request->name);
-
-                dd($socialUser);
             } elseif ($provider === 'google') {
                 $socialUser = $this->verifyGoogleToken($request->access_token);
             } else {
@@ -67,17 +67,47 @@ class V2SocialLoginController extends Controller
 
             if (!$user) {
                 $user = User::create([
-                    'name' => $socialUser['name'],
                     'email' => $socialUser['email'],
-                    'avatar' => $socialUser['avatar'] ?? null,
                     'password' => bcrypt(Str::random(16)),
                     'status' => 'active',
-                    'otp_verified_at' => now(),
+                    'email_verified_at' => now(),
                 ]);
 
+                $displayName = $socialUser['name'] ?? $socialUser['email'] ?? 'User';
+                $slug = Helper::generateSlug($displayName);
+                $username = Helper::generateUsername($displayName);
 
+                $profileData = [
+                    'user_id' => $user->id,
+                    'name' => $displayName,
+                    'username' => $username,
+                    'slug' => $slug,
+                ];
+
+                if (!empty($socialUser['avatar'])) {
+                    $profileData['avatar'] = $socialUser['avatar'];
+                }
+
+                Profile::create($profileData);
 
                 $isNewUser = true;
+            } elseif (!$user->profile) {
+                $displayName = $socialUser['name'] ?? $socialUser['email'] ?? 'User';
+                $slug = Helper::generateSlug($displayName);
+                $username = Helper::generateUsername($displayName);
+
+                $profileData = [
+                    'user_id' => $user->id,
+                    'name' => $displayName,
+                    'username' => $username,
+                    'slug' => $slug,
+                ];
+
+                if (!empty($socialUser['avatar'])) {
+                    $profileData['avatar'] = $socialUser['avatar'];
+                }
+
+                Profile::create($profileData);
             }
 
             Auth::login($user);
@@ -87,8 +117,8 @@ class V2SocialLoginController extends Controller
             return $this->success(
                 'User logged in successfully.',
                 [
-                    'user'       => new UserResource($user),
-                    'token'      => $token,
+                    'user' => new UserResource($user),
+                    'token' => $token,
                     'token_type' => 'bearer',
                     'expires_in' => $expiresIn,
                     'is_new_user' => $isNewUser,
