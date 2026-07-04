@@ -6,12 +6,9 @@ use App\Helpers\FileHandle;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
-use App\Models\OrderReview;
-use App\Models\SellerEarnings;
 use App\Traits\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -236,20 +233,11 @@ class UserProfileController extends Controller
      */
     public function destroy(Request $request)
     {
-        $request->validate([
-            'password' => 'required|string'
-        ]);
-
         try {
             $user = auth('api')->user()->load('profile');
 
             if (!$user) {
                 return $this->error(null, 'User not found', 404);
-            }
-
-            // Confirm password
-            if (!Hash::check($request->password, $user->password)) {
-                return $this->error(null, 'Invalid password', 403);
             }
 
             // Delete avatar from storage
