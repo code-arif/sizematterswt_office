@@ -118,4 +118,22 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Note::class);
     }
+
+    /** User subscription */
+    public function subscription(): HasOne
+    {
+        return $this->hasOne(Subscription::class);
+    }
+
+    /** Check if user has an active subscription */
+    public function hasActiveSubscription(): bool
+    {
+        $subscription = $this->subscription;
+        if (!$subscription) {
+            return false;
+        }
+
+        return $subscription->status === 'active' && 
+               ($subscription->expires_at === null || $subscription->expires_at->isFuture());
+    }
 }

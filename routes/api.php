@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\NoteController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PageController;
 use App\Http\Controllers\Api\Ranche\RancheController;
+use App\Http\Controllers\Api\RevenueCatWebhookController;
 use Illuminate\Support\Facades\Route;
 
 // health check
@@ -202,6 +203,9 @@ Route::group(['prefix' => 'v1'], function ($router) {
         // Clear all read notifications
         Route::delete('/clear-read', [NotificationController::class, 'clearRead']);
     });
+
+    // RevenueCat Webhooks (Server-to-Server)
+    Route::post('/webhooks/revenuecat', [RevenueCatWebhookController::class, 'handle']);
 
     // Public Pages
     Route::get('/privacy-policy', [PageController::class, 'getPrivacyPolicy']);
