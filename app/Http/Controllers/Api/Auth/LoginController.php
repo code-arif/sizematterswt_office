@@ -32,8 +32,8 @@ class LoginController extends Controller
         }
 
         try {
-            // Fetch user WITH profile relationship
-            $user = User::with('profile')
+            // Fetch user WITH profile and subscription relationships
+            $user = User::with(['profile', 'subscription'])
                 ->where('email', strtolower($request->email))
                 ->first();
 
@@ -87,8 +87,8 @@ class LoginController extends Controller
             $refreshToken = auth('api')->refresh();
             $expiresIn = auth('api')->factory()->getTTL() * 60;
 
-            // Load profile relationship
-            $user = auth('api')->user()->load('profile');
+            // Load profile and subscription relationships
+            $user = auth('api')->user()->load(['profile', 'subscription']);
 
             return $this->success(
                 'Access token refreshed successfully',

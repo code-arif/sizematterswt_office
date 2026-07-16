@@ -15,6 +15,7 @@ class UserResource extends JsonResource
             'phone' => $this->phone ?? '',
             'status' => $this->status ?? 'inactive',
             'role' => $this->getRoleNames()->first() ?? null,
+            'is_subscribe' => $this->hasActiveSubscription(),
 
             // profile resource
             'profile' => $this->profile

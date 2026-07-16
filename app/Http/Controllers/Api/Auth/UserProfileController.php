@@ -24,7 +24,7 @@ class UserProfileController extends Controller
     public function profile()
     {
         try {
-            $user = auth('api')->user()->load('profile');
+            $user = auth('api')->user()->load(['profile', 'subscription']);
 
             if (!$user) {
                 return $this->error(
@@ -55,7 +55,7 @@ class UserProfileController extends Controller
     {
         try {
 
-            $user = auth('api')->user()->load('profile');
+            $user = auth('api')->user()->load(['profile', 'subscription']);
 
             if (!$user) {
                 return $this->error(
@@ -141,7 +141,7 @@ class UserProfileController extends Controller
 
 
             // Reload User
-            $user->refresh()->load('profile');
+            $user->refresh()->load(['profile', 'subscription']);
 
             return $this->success(
                 'Profile updated successfully',
@@ -165,7 +165,7 @@ class UserProfileController extends Controller
     public function updateAvatar(Request $request)
     {
         try {
-            $user = auth('api')->user()->load('profile');
+            $user = auth('api')->user()->load(['profile', 'subscription']);
 
             if (!$user) {
                 return $this->error(
@@ -209,7 +209,7 @@ class UserProfileController extends Controller
             $user->profile->update(['avatar' => $avatarPath]);
 
             // Reload user with profile
-            $user->refresh()->load('profile');
+            $user->refresh()->load(['profile', 'subscription']);
 
             return $this->success(
                 'Avatar updated successfully',
@@ -234,7 +234,7 @@ class UserProfileController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $user = auth('api')->user()->load('profile');
+            $user = auth('api')->user()->load(['profile', 'subscription']);
 
             if (!$user) {
                 return $this->error(null, 'User not found', 404);
