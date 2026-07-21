@@ -186,7 +186,17 @@
                     $systemSettingsOpen = request()->routeIs('admin.profile.index', 'admin.settings.*');
                     $privacyTermsOpen = request()->routeIs('admin.privacy-policy.*', 'admin.terms-conditions.*');
                     $supportContentOpen = request()->routeIs('admin.support-content.*');
+                    $privacyContentOpen = request()->routeIs('admin.privacy-policy-content.*');
                 @endphp
+
+                {{-- Privacy Policy Content --}}
+                <li class="nav-item">
+                    <a class="nav-link menu-link {{ $privacyContentOpen ? 'active' : '' }}"
+                        href="{{ route('admin.privacy-policy-content.index') }}">
+                        <i class="ri-shield-line"></i>
+                        <span>Privacy Policy</span>
+                    </a>
+                </li>
 
                 {{-- Support Content --}}
                 <li class="nav-item">

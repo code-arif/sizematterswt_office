@@ -10,6 +10,7 @@ use App\Http\Controllers\Web\Admin\Firm\FarmController;
 use App\Http\Controllers\Web\Admin\PrivacyandTerms\PrivacyPolicyController;
 use App\Http\Controllers\Web\Admin\PrivacyandTerms\TermsConditionsController;
 use App\Http\Controllers\Web\Admin\Ranches\RanchController;
+use App\Http\Controllers\Web\Admin\Cms\PrivacyPolicyContentController;
 use App\Http\Controllers\Web\Admin\Cms\SupportContentController;
 use Illuminate\Support\Facades\Route;
 
@@ -171,5 +172,17 @@ Route::prefix('support-content')->name('admin.support-content.')->group(function
     Route::post('/', [SupportContentController::class, 'store'])->name('store');
     Route::get('/edit', [SupportContentController::class, 'edit'])->name('edit');
     Route::patch('/{id}', [SupportContentController::class, 'update'])->name('update');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Privacy Policy Content
+|--------------------------------------------------------------------------
+*/
+Route::prefix('privacy-policy-content')->name('admin.privacy-policy-content.')->group(function () {
+    Route::get('/', [PrivacyPolicyContentController::class, 'index'])->name('index');
+    Route::post('/', [PrivacyPolicyContentController::class, 'store'])->name('store');
+    Route::get('/edit', [PrivacyPolicyContentController::class, 'edit'])->name('edit');
+    Route::patch('/{id}', [PrivacyPolicyContentController::class, 'update'])->name('update');
 });
 
