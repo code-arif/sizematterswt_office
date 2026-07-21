@@ -185,7 +185,17 @@
                     // System Settings dropdown is open when any child route is active
                     $systemSettingsOpen = request()->routeIs('admin.profile.index', 'admin.settings.*');
                     $privacyTermsOpen = request()->routeIs('admin.privacy-policy.*', 'admin.terms-conditions.*');
+                    $supportContentOpen = request()->routeIs('admin.support-content.*');
                 @endphp
+
+                {{-- Support Content --}}
+                <li class="nav-item">
+                    <a class="nav-link menu-link {{ $supportContentOpen ? 'active' : '' }}"
+                        href="{{ route('admin.support-content.index') }}">
+                        <i class="ri-customer-service-2-line"></i>
+                        <span>Support Content</span>
+                    </a>
+                </li>
 
                 <li class="nav-item">
                     <a class="nav-link menu-link {{ $privacyTermsOpen ? 'active' : '' }}"

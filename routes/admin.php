@@ -10,6 +10,7 @@ use App\Http\Controllers\Web\Admin\Firm\FarmController;
 use App\Http\Controllers\Web\Admin\PrivacyandTerms\PrivacyPolicyController;
 use App\Http\Controllers\Web\Admin\PrivacyandTerms\TermsConditionsController;
 use App\Http\Controllers\Web\Admin\Ranches\RanchController;
+use App\Http\Controllers\Web\Admin\Cms\SupportContentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AdminDashboardController::class, 'index'])->name('show.admin.dashboard'); // show admin dashboard
@@ -102,14 +103,14 @@ Route::prefix('ranches')->name('admin.ranches.')->group(function () {
 */
 Route::prefix('events')->name('admin.events.')->group(function () {
     Route::get('/', [EventController::class, 'index'])->name('index');
-    Route::get('/datatable',[EventController::class, 'datatable'])->name('datatable');
-    Route::get('/create',[EventController::class, 'create'])->name('create');
-    Route::post('/',[EventController::class, 'store'])->name('store');
-    Route::get('/{event}',[EventController::class, 'show'])->name('show');
-    Route::get('/{event}/edit',[EventController::class, 'edit'])->name('edit');
-    Route::put('/{event}',[EventController::class, 'update'])->name('update');
-    Route::delete('/{event}',[EventController::class, 'destroy'])->name('destroy');
-    Route::patch('/{event}/toggle-status',[EventController::class, 'toggleStatus'])->name('toggle-status');
+    Route::get('/datatable', [EventController::class, 'datatable'])->name('datatable');
+    Route::get('/create', [EventController::class, 'create'])->name('create');
+    Route::post('/', [EventController::class, 'store'])->name('store');
+    Route::get('/{event}', [EventController::class, 'show'])->name('show');
+    Route::get('/{event}/edit', [EventController::class, 'edit'])->name('edit');
+    Route::put('/{event}', [EventController::class, 'update'])->name('update');
+    Route::delete('/{event}', [EventController::class, 'destroy'])->name('destroy');
+    Route::patch('/{event}/toggle-status', [EventController::class, 'toggleStatus'])->name('toggle-status');
     Route::delete('/{event}/media/{mediaId}', [EventController::class, 'removeMedia'])->name('media.delete');
 });
 
@@ -119,17 +120,17 @@ Route::prefix('advertisements')->name('admin.advertisements.')->group(function (
     Route::get('/', [AdvertisementController::class, 'index'])->name('index');
 
     // Yajra DataTable JSON
-    Route::get('/datatable',[AdvertisementController::class, 'datatable'])->name('datatable');
+    Route::get('/datatable', [AdvertisementController::class, 'datatable'])->name('datatable');
 
     // Create / Store
-    Route::get('/create',[AdvertisementController::class, 'create'])->name('create');
+    Route::get('/create', [AdvertisementController::class, 'create'])->name('create');
     Route::post('/', [AdvertisementController::class, 'store'])->name('store');
 
     // Show / Edit / Update / Delete
     Route::get('/{advertisement}', [AdvertisementController::class, 'show'])->name('show');
     Route::get('/{advertisement}/edit', [AdvertisementController::class, 'edit'])->name('edit');
-    Route::post('/{advertisement}',[AdvertisementController::class, 'update'])->name('update');
-    Route::delete('/{advertisement}',[AdvertisementController::class, 'destroy'])->name('destroy');
+    Route::post('/{advertisement}', [AdvertisementController::class, 'update'])->name('update');
+    Route::delete('/{advertisement}', [AdvertisementController::class, 'destroy'])->name('destroy');
 
     // Toggle status
     Route::patch('/{advertisement}/toggle-status', [AdvertisementController::class, 'toggleStatus'])->name('toggle-status');
@@ -155,5 +156,20 @@ Route::prefix('terms-conditions')->name('admin.terms-conditions.')->group(functi
     Route::post('/', [TermsConditionsController::class, 'store'])->name('store');
     Route::get('/edit', [TermsConditionsController::class, 'edit'])->name('edit');
     Route::patch('/{id}', [TermsConditionsController::class, 'update'])->name('update');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Support Content (CMS)
+|--------------------------------------------------------------------------
+*/
+
+
+
+Route::prefix('support-content')->name('admin.support-content.')->group(function () {
+    Route::get('/', [SupportContentController::class, 'index'])->name('index');
+    Route::post('/', [SupportContentController::class, 'store'])->name('store');
+    Route::get('/edit', [SupportContentController::class, 'edit'])->name('edit');
+    Route::patch('/{id}', [SupportContentController::class, 'update'])->name('update');
 });
 
